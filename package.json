@@ -1,0 +1,28 @@
+{
+  "name": "quark-lang",
+  "version": "1.0.0",
+  "description": "⚛ Quark programming language",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc-watch -p . --onSuccess \"node dist/index.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NessMC/quark-lang.git"
+  },
+  "keywords": [
+    "quark",
+    "language",
+    "programming"
+  ],
+  "author": "NessMC",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NessMC/quark-lang/issues"
+  },
+  "homepage": "https://github.com/NessMC/quark-lang#readme",
+  "devDependencies": {
+    "@types/node": "^14.0.24"
+  }
+}
