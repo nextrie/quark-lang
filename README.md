@@ -27,8 +27,8 @@
 - [Getting Started](#getting_started)
 - [Manual installation](#manual)
 - [Usage](#usage)
-- [TODO](../TODO.md)
-- [Contributing](../CONTRIBUTING.md)
+- [TODO](./TODO.md)
+- [Contributing](./CONTRIBUTING.md)
 - [Authors](#authors)
 
 ## 🧐 About <a name = "about"></a>
