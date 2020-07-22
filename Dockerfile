@@ -5,17 +5,14 @@ RUN apk update && apk add npm curl bash python g++ make && rm -rf /var/cache/apk
 WORKDIR /usr/src/app
 
 COPY package.json ./
-COPY src src
+COPY dist dist
 
 FROM node:12-alpine
 
 WORKDIR /usr/src/app
 
-COPY --from=BUILD_IMAGE /usr/src/app/src ./src
-
-RUN npm install --global npm typescript ts-node
-RUN npm install --save-dev @types/node
+COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
 
 EXPOSE 3030
 
-CMD [ "ts-node", "./src/index.ts" ]
+CMD [ "node", "./dist/index.js" ]
