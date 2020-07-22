@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc-watch -p . --onSuccess \"node dist/index.js\""
+    "build": "tsc && \"node dist/index.js\""
   },
   "repository": {
     "type": "git",
