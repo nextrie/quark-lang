@@ -30,7 +30,8 @@
     "@typescript-eslint/parser": "^3.7.0",
     "eslint": "^7.5.0",
     "eslint-plugin-import": "^2.22.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "uvu": "^0.3.0"
   },
   "dependencies": {
     "eslint-config-airbnb-typescript": "^9.0.0"
