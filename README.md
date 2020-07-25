@@ -23,21 +23,25 @@
 
 ## 📝 Table of Contents
 
-- [About](#about)
-- [Getting Started](#getting_started)
-- [Manual installation](#manual)
-- [Usage](#usage)
-- [TODO](./TODO.md)
-- [Contributing](./CONTRIBUTING.md)
-- [Authors](#authors)
+-   [About](#about)
+-   [Getting Started](#getting_started)
+-   [Manual installation](#manual)
+-   [Usage](#usage)
+-   [TODO](./TODO.md)
+-   [Contributing](./CONTRIBUTING.md)
+-   [Authors](#authors)
 
 ## 🧐 About <a name = "about"></a>
 
-The main goal of Quark is to offer a language that combines simplicity and productivity in addition to its cool syntax.
+The main goal of Quark is to offer a language that combines simplicity and
+productivity in addition to its cool syntax.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [Manual installation](#manual) for notes on how to install the project on a live system.
+These instructions will get you a copy of the project up and running on your
+local machine for development and testing purposes. See
+[Manual installation](#manual) for notes on how to install the project on a live
+system.
 
 ### Prerequisites
 
@@ -66,7 +70,8 @@ No tests for the moment.
 
 ### And coding style tests
 
-The linter is present in order to allow anyone to be able to contribute while being in the main coherence of the code.
+The linter is present in order to allow anyone to be able to contribute while
+being in the main coherence of the code.
 
 ```
 npm run lint
@@ -97,7 +102,8 @@ To deploy Quark lang, do:
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@NessMC](https://github.com/NessMC) - Idea & Initial work
+-   [@NessMC](https://github.com/NessMC) - Idea & Initial work
 
-See also the list of [contributors](https://github.com/NessMC/quark-lang/contributors) who participated in this project.
-
+See also the list of
+[contributors](https://github.com/NessMC/quark-lang/contributors) who
+participated in this project.
