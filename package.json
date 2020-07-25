@@ -7,7 +7,8 @@
         "test": ".\\node_modules\\.bin\\uvu -r ts-node/register",
         "build": ".\\node_modules\\.bin\\tsc",
         "start": "node dist/index.js",
-        "lint": ".\\node_modules\\.bin\\eslint . --ext .ts --fix"
+        "lint": ".\\node_modules\\.bin\\eslint . --ext .ts --fix",
+        "prettify": ".\\node_modules\\.bin\\prettier --write ."
     },
     "repository": {
         "type": "git",
