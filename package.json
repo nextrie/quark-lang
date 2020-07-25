@@ -6,7 +6,8 @@
     "scripts": {
         "test": ".\\node_modules\\.bin\\uvu -r ts-node/register",
         "build": ".\\node_modules\\.bin\\tsc",
-        "start": "node dist/index.js",
+        "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register .\\dist\\index.js",
+        "watch": "nodemon .\\src\\index.ts --exec \"npm run start\"",
         "lint": ".\\node_modules\\.bin\\eslint . --ext .ts --fix",
         "prettify": ".\\node_modules\\.bin\\prettier --write ."
     },
@@ -37,6 +38,7 @@
     },
     "dependencies": {
         "eslint-config-airbnb-typescript": "^9.0.0",
-        "ts-node": "^8.10.2"
+        "ts-node": "^8.10.2",
+        "tsconfig-paths": "^3.9.0"
     }
 }

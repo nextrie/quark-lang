@@ -1,1 +1,3 @@
-console.log('test')
+import VM from '@vm/vm'
+
+new VM()

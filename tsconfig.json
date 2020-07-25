@@ -3,11 +3,15 @@
         "rootDir": "./src",
         "outDir": "./dist",
         "watch": true,
-        "target": "ES5",
-        "lib": ["ES2015", "ES2016", "dom", "es7"],
-        "typeRoots": [],
+        "module": "commonjs",
         "types": ["node"],
-        "downlevelIteration": true
+        "downlevelIteration": true,
+
+        "baseUrl": "./src",
+        "paths": {
+            "@vm/*": ["vm/*"]
+        }
+        
     },
     "exclude": ["node_modules"],
     "include": ["src/**/*"],
