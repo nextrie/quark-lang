@@ -1,2 +1,1 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
+import * as Chai  from 'chai'

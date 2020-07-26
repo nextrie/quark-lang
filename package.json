@@ -35,8 +35,7 @@
         "eslint": "^7.5.0",
         "eslint-plugin-import": "^2.22.0",
         "prettier": "2.0.5",
-        "typescript": "^3.9.7",
-        "uvu": "^0.3.0"
+        "typescript": "^3.9.7"
     },
     "dependencies": {
         "@types/chai": "^4.2.12",
