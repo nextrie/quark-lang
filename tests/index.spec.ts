@@ -1,1 +1,1 @@
-import * as Chai  from 'chai'
+import * as Chai from 'chai'
