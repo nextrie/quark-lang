@@ -1,3 +1,3 @@
-import Comments from '@other/comment'
+import Comments from '@other/comment';
 
-console.log(Comments.generate('Quark lang', 'Transpiler'))
+console.log(Comments.generate('Quark lang', 'Transpiler'));

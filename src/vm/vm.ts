@@ -1,5 +1,5 @@
 export default class VM {
     constructor() {
-        console.log('test')
+        console.log('test');
     }
 }
