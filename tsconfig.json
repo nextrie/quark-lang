@@ -1,24 +1,28 @@
 {
     "compilerOptions": {
-        "rootDir": "./src",
+        "rootDir": ".",
         "outDir": "./dist",
         "watch": true,
         "module": "commonjs",
         "types": ["node"],
         "downlevelIteration": true,
 
-        "baseUrl": "./src",
+        "baseUrl": ".",
         "paths": {
-            "@vm/*": ["vm/*"],
-            "@core/*": ["core/*"],
-            "@tokens": ["core/tokens/tokens.ts"],
-            "@other/*": ["other/*"],
-            "@utils": ["utils/*"],
+            "@vm/*": ["./src/vm/*"],
+            "@core/*": ["./src/core/*"],
+            "@tokens": ["./src/core/tokens/tokens.ts"],
+            "@other/*": ["./src/other/*"],
+            "@utils": ["./src/utils/*"],
+            "@tests/*": ["./src/tests/*"],
             "@/*": ["*"]
         }
         
     },
     "exclude": ["node_modules"],
-    "include": ["src/**/*"],
+    "include": [
+        "src/**/*",
+        "tests/**/*"
+    ],
     "files": ["src/index.ts"]
 }
