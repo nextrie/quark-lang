@@ -110,5 +110,7 @@ export default class Comments {
                 trails_content.reverse().join('')
 
         return result
+
     }
+    
 }
