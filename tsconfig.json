@@ -9,7 +9,12 @@
 
         "baseUrl": "./src",
         "paths": {
-            "@vm/*": ["vm/*"]
+            "@vm/*": ["vm/*"],
+            "@core/*": ["core/*"],
+            "@tokens": ["core/tokens/tokens.ts"],
+            "@other/*": ["other/*"],
+            "@utils": ["utils/*"],
+            "@/*": ["*"]
         }
         
     },

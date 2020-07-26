@@ -1,3 +1,3 @@
-import VM from '@vm/vm'
+import Comments from '@other/comment'
 
-new VM()
+console.log(Comments.generate('Quark lang', 'Transpiler'))
