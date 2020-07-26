@@ -3,5 +3,8 @@
     "extends": ["airbnb-typescript/base"],
     "parserOptions": {
         "project": "./tsconfig.json"
+    },
+    "rules": {
+        "eol-last": "off"
     }
 }
