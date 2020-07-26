@@ -4,7 +4,7 @@
         "outDir": "./dist",
         "watch": true,
         "module": "commonjs",
-        "types": ["node"],
+        "types": ["node", "mocha", "chai"],
         "downlevelIteration": true,
 
         "baseUrl": ".",
