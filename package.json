@@ -50,13 +50,13 @@
     },
     "lint-staged": {
         "*.ts": [
-            "./node_modules/.bin/eslint . --ext .ts --fix",
+            "npm run lint",
             "git add ."
         ]
     },
     "husky": {
         "hooks": {
-            "pre-commit": "./node_modules/.bin/lint-staged"
+            "pre-commit": "./node_modules/.bin/lint-staged && npm run test"
         }
     }
 }
