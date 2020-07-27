@@ -2,6 +2,7 @@ const child  = require('child_process'),
       dotenv = require('dotenv').config().parsed,
       axios  = require('axios')
 
+// All categories and their emojies matches.
 
 const categories = {
   'Improvements': ['⚡️', '✨', '🎉', '💬', '💡', '♿️', '🚚', '⚗', '🧼'],
@@ -10,9 +11,13 @@ const categories = {
   'GitHub': ['📈', '👷', '👥', '📸', '🔀', '⏪', '🔖', '📝', '🚀']
 }
 
+// Function remove emojies from string.
+
 function unemoji (string = '') {
   return string.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
 }
+
+// Function basic categorization.
 
 function categorize (commit) {
   for (const category in categories) {
@@ -25,6 +30,8 @@ function categorize (commit) {
   }
   return undefined
 }
+
+// Function return next new version.
 
 function get_version (version) {
   version = version.slice(1).split('.').map(x => parseInt(x)).reverse()
@@ -42,6 +49,8 @@ function get_version (version) {
   return 'v' + version.reverse().join('.')
 }
 
+// Function format date.
+
 function format_date (date) {
   date = date
     .match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)[0].split('T')
@@ -56,6 +65,8 @@ function format_date (date) {
   return final_date
 }
 
+// Function order commits.
+
 function sort_by_category (items) {
   const sort_variable = {}
   for (const item of items) {
@@ -64,6 +75,8 @@ function sort_by_category (items) {
   }
   return sort_variable
 }
+
+// Function sort category order.
 
 function sort_categories (categories) {
   const tmp_categories = {},
@@ -88,6 +101,8 @@ function sort_categories (categories) {
   
 }
 
+// Function return category markdown content.
+
 function display_category (category_name, category_items) {
 
   let category_content = ''
@@ -102,6 +117,8 @@ function display_category (category_name, category_items) {
 
 }
 
+// Function return release markdown content.
+
 function create_release (informations, categories) {
   let release = ''
 
@@ -114,13 +131,19 @@ function create_release (informations, categories) {
   return release
 }
 
+// Fetching and logging git changes.
+
 child.exec('git fetch && git log --pretty=format:"%s"', function (error, content) {
   if (error) throw error
+  // Commits decomposition.
   content = content
     .split(/\r?\n/g)
     .map(x => x.trim())
 
+  // Checking if commit starts with release emoji.
   if (!content[0].startsWith('🔖')) return
+
+  // Fetching releases from repository.
   axios.get(`https://api.github.com/repos/${process.env.USER.toString().toLowerCase()}/${process.env.REPOSITORY.toString()}/releases`, {
     headers: {
         'Content-Type': 'application/json',
@@ -131,6 +154,7 @@ child.exec('git fetch && git log --pretty=format:"%s"', function (error, content
   .then(function (result) {
     let version = '',
         date    = ''
+    // Checking if there are releases.
     if (result.data.length === 0) {
       version = 'v0.0.1'
     } else {
@@ -140,6 +164,7 @@ child.exec('git fetch && git log --pretty=format:"%s"', function (error, content
 
     version = get_version(version)
 
+    // Fetching commits since date variable.
     child.exec(`git log --pretty=format:"%s" ${date}`, {cwd: process.cwd()}, function (error, content) {
       content = content
         .split(/\r?\n/g)
@@ -152,8 +177,10 @@ child.exec('git fetch && git log --pretty=format:"%s"', function (error, content
 
       const category_sorted = sort_categories(sort_by_category(commit_categories))
 
+      // Pushing changes to github.
       child.exec('git push --force', function (error, content) {
         if (error) throw error
+        // Creating new release.
         axios({
           method: 'POST',
           url: `https://api.github.com/repos/${process.env.USER}/${process.env.REPOSITORY}/releases`,
