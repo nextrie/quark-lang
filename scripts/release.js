@@ -1,138 +1,14 @@
-const child  = require('child_process'),
-      dotenv = require('dotenv').config().parsed,
-      axios  = require('axios')
-
-// All categories and their emojies matches.
-
-const categories = {
-  'Improvements': ['⚡️', '✨', '🎉', '💬', '💡', '♿️', '🚚', '⚗', '🧼'],
-  'Fixes': ['💩', '💥', '🍻', '🗑', '♻️', '🚨', '💚', '🔒', '🚑', '🔥', '🥅', '✏️'],
-  'Node.JS': ['🔧', '🔨', '➕', '➖', '📦', '⬆️', '⬇️'],
-  'GitHub': ['📈', '👷', '👥', '📸', '🔀', '⏪', '🔖', '📝', '🚀']
-}
-
-// Function remove emojies from string.
-
-function unemoji (string = '') {
-  return string.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
-}
-
-// Function basic categorization.
-
-function categorize (commit) {
-  for (const category in categories) {
-    const emojies = categories[category]
-    for (const emoji of emojies) {
-      if (commit.startsWith(emoji)) {
-        return category
-      }
-    }
-  }
-  return undefined
-}
-
-// Function return next new version.
-
-function get_version (version) {
-  version = version.slice(1).split('.').map(x => parseInt(x)).reverse()
-  for (const index in version) {
-    const value = version[index]
-    if (value + 1 < 10) {
-      version[index] += 1
-      break
-    } else {
-      const i = version.slice(0, parseInt(index) + 1)
-      version.splice(0, parseInt(index) + 1, ...(new Array(i.length).fill(0)))
-      continue
-    }
-  }
-  return 'v' + version.reverse().join('.')
-}
-
-// Function format date.
-
-function format_date (date) {
-  date = date
-    .match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)[0].split('T')
-  let f_date = date,
-      time = f_date[1]
-        .split(/:/g)
-        .map((x, index) => index === 0 ? x = parseInt(x) + 2 : x)
-        .join(':'),
-      final_date = [f_date[0], 'T', time]
-        .join('')
-
-  return final_date
-}
-
-// Function order commits.
-
-function sort_by_category (items) {
-  const sort_variable = {}
-  for (const item of items) {
-    if (!sort_variable[item.category]) sort_variable[item.category] = []
-    sort_variable[item.category].push(unemoji(item.commit).trim())
-  }
-  return sort_variable
-}
-
-// Function sort category order.
-
-function sort_categories (categories) {
-  const tmp_categories = {},
-        order          = ['Improvements', 'Fixes', 'Node.JS', 'GitHub'],
-        tmp_order      = []
-
-  for (const index in order) {
-    const item = order[index]
-    if (categories[item]) tmp_order.push(item)
-  }
-
-  while (Object.keys(tmp_categories).length !== Object.keys(categories).length) {
-    for (const value in categories) {
-      if (tmp_order[0] === value) {
-        tmp_categories[value] = categories[value]
-        tmp_order.shift()
-      }
-    }
-  }
-
-  return tmp_categories
-  
-}
-
-// Function return category markdown content.
-
-function display_category (category_name, category_items) {
-
-  let category_content = ''
-
-  category_content += `### ${category_name}:\n`
-  
-  for (const item of category_items) {
-    category_content += `- ${item}\n`
-  }
-
-  return category_content
-
-}
-
-// Function return release markdown content.
-
-function create_release (informations, categories) {
-  let release = ''
-
-  release += `## New ${informations.version} release.\n`
-
-  for (const category in categories) {
-    release += display_category(category, categories[category])
-  }
-
-  return release
-}
+const child = require('child_process'),
+  dotenv = require('dotenv').config().parsed,
+  axios = require('axios'),
+  categorize = require('./libs/categorize'),
+  create_release = require('./libs/create_release'),
+  format_date = require('./libs/format_date'),
+  get_version = require('./libs/get_version'),
+  sort_categories = require('./libs/sort_categories'),
+  sort_by_category = require('./libs/sort_by_category')
 
 // Fetching and logging git changes.
-
 child.exec('git fetch && git log --pretty=format:"%s"', function (error, content) {
   if (error) throw error
   // Commits decomposition.
