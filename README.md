@@ -11,6 +11,7 @@
 [![GitHub Issues](https://img.shields.io/github/issues/NessMC/quark-lang.svg)](https://github.com/NessMC/quark-lang/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/NessMC/quark-lang.svg)](https://github.com/NessMC/quark-lang/pulls)
 [![License](https://img.shields.io/badge/license-Creative%20commons-blue.svg)](/LICENSE)
+[![BCH compliance](https://bettercodehub.com/edge/badge/NessMC/quark-lang?branch=master)](https://bettercodehub.com/)
 
 </div>
 
