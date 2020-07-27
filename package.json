@@ -56,7 +56,8 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "./node_modules/.bin/lint-staged && npm run test"
+            "pre-commit": "./node_modules/.bin/lint-staged && npm run test",
+            "post-commit": "node ./scripts/release.js"
         }
     }
 }
