@@ -6,6 +6,8 @@
         "project": "./tsconfig.json"
     },
     "rules": {
-        "eol-last": "off"
+        "eol-last": "off",
+        "spaced-comment": "off",
+        "linebreak-style": "off"
     }
 }
