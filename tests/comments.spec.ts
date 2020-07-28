@@ -1,3 +1,8 @@
+/*//////////////////////////////////////
+               Quark lang
+              Comment test
+//////////////////////////////////////*/
+
 import * as Chai from 'chai';
 import Comments from '@other/comment';
 
