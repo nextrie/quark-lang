@@ -28,6 +28,7 @@
 -   [About](#about)
 -   [Getting Started](#getting_started)
 -   [Manual installation](#manual)
+-   [Build](#build)
 -   [Usage](#usage)
 -   [TODO](./TODO.md)
 -   [Contributing](./CONTRIBUTING.md)
@@ -100,6 +101,21 @@ To deploy Quark lang, do:
 
  $ docker pull nessmcfr/quark-lang
  $ docker run nessmcfr/quark-lang
+```
+
+## 🚀 Build <a name = "build"></a>
+
+To build the project, do:
+
+```bash
+$ npm run bundle 
+# That generate file called bundle.js, just run it with : node dist/bundle.js
+
+# OR
+
+$ docker-compose build
+$ docker run quark-lang_app
+
 ```
 
 ## ✍️ Authors <a name = "authors"></a>
