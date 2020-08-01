@@ -1,28 +1,33 @@
 {
     "compilerOptions": {
-        "rootDir": ".",
+        "rootDirs": [
+            "src/",
+            "tests/"
+        ],
         "outDir": "./dist",
         "watch": true,
-        "module": "commonjs",
+        "target": "es5",
+        "module": "CommonJS",
         "types": ["node", "mocha", "chai"],
+        "moduleResolution": "classic",
         "downlevelIteration": true,
+        "allowJs": true,
 
         "baseUrl": ".",
         "paths": {
-            "@vm/*": ["./src/vm/*"],
-            "@core/*": ["./src/core/*"],
-            "@tokens": ["./src/core/tokens/tokens.ts"],
-            "@other/*": ["./src/other/*"],
-            "@utils": ["./src/utils/*"],
-            "@tests/*": ["./src/tests/*"],
-            "@/*": ["*"]
+            "vm/*": ["./src/vm/*"],
+            "core/*": ["./src/core/*"],
+            "tokens": ["./src/core/tokens/tokens.ts"],
+            "other/*": ["./src/other/*"],
+            "utils": ["./src/utils/*"],
+            "tests/*": ["./tests/*"]
         }
         
     },
     "exclude": ["node_modules"],
     "include": [
-        "src/**/*",
-        "tests/**/*"
+        "src/**/*.ts",
+        "tests/**/*.ts"
     ],
     "files": ["src/index.ts"]
 }

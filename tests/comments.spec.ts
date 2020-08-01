@@ -4,7 +4,7 @@
 //////////////////////////////////////*/
 
 import * as Chai from 'chai';
-import Comments from '@other/comment';
+import Comments from 'other/comment';
 
 // Comments tests
 
