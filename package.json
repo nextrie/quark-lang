@@ -4,14 +4,14 @@
     "description": "⚛ Quark programming language",
     "main": "index.js",
     "scripts": {
-        "test": ".\\node_modules\\.bin\\mocha -r ts-node/register/transpile-only -r tsconfig-paths/register tests/**/*.spec.ts",
-        "build": "./node_modules/.bin/tsc",
-        "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/index.js",
+        "test": "yarn mocha -r ts-node/register/transpile-only -r tsconfig-paths/register tests/**/*.spec.ts",
+        "build": "yarn tsc",
+        "start": "node dist/bundle.js",
         "start:watch": "nodemon dist/index.js --exec \"npm run start\"",
-        "dev": ".\\node_modules\\.bin\\ts-node --project tsconfig.json -r tsconfig-paths/register .\\src\\index.ts",
+        "dev": "yarn ts-node --project tsconfig.json -r tsconfig-paths/register .\\src\\index.ts",
         "dev:watch": "nodemon src/index.ts --exec \"npm run dev\"",
-        "lint": "./node_modules/.bin/eslint . --ext .ts --fix",
-        "bundle": ".\\node_modules\\.bin\\webpack-cli"
+        "lint": "yarn eslint . --ext .ts --fix",
+        "bundle": "yarn webpack-cli"
     },
     "repository": {
         "type": "git",
