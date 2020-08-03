@@ -43,7 +43,6 @@
     },
     "dependencies": {
         "@types/chai": "^4.2.12",
-        "axios": "^0.19.2",
         "chai": "^4.2.0",
         "dotenv": "^8.2.0",
         "eslint-config-airbnb-typescript": "^9.0.0",
@@ -62,8 +61,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "./node_modules/.bin/lint-staged && npm run test",
-            "post-commit": "node ./scripts/release.js"
+            "pre-commit": "./node_modules/.bin/lint-staged && npm run test"
         }
     }
 }
