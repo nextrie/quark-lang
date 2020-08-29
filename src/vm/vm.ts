@@ -7,6 +7,7 @@ import { VM } from 'interfaces/vm';
 import { Stack } from 'interfaces/stack';
 import bytecode from 'vm/bytecode';
 import { Symbol } from 'interfaces/symbol';
+import { Value } from 'interfaces/stackValue';
 // import operators from 'core/tokens/operators';
 // import * as jesp from 'jsep';
 
@@ -74,6 +75,12 @@ export default class VirtualMachine {
     return 'values';
   }
 
+  private getInitialSymbolInValue(value: Value) {
+    if (!value) return value;
+    if (this.checkStackCategory(value.bound) === 'symbols') return this.stack.symbols[value.bound];
+    return this.getInitialSymbolInValue(this.stack.values[value.bound]);
+  }
+
   public run(): void {
     this.bytecode.map((line: Array<string>) => {
       this.expression = [];
@@ -85,9 +92,7 @@ export default class VirtualMachine {
           if (!this.stack.values[element]) bytes = this.findSymbolByBytecode(element);
           else if (this.checkStackCategory(this.stack.values[element]) === 'values') {
             if (this.checkStackCategory(this.stack.values[element].bound) === 'values') {
-              bytes = this.findSymbolByBytecode(
-                this.stack.values[this.stack.values[element].bound].bound,
-              );
+              bytes = this.getInitialSymbolInValue(this.stack.values[element]);
             }
           }
 
