@@ -3,8 +3,8 @@
                 Scanners
 //////////////////////////////////////*/
 
-import { Token } from 'src/interfaces/token';
-import { Value } from 'src/interfaces/value';
+import { Token } from 'interfaces/token';
+import { Value } from 'interfaces/value';
 
 export function formatOutput(currentToken: string, tokenValue: string, tokenizer: any): Token {
   const output: Token = {

@@ -1,17 +1,1 @@
-# STACK:
-0x16
-  0x77 0x65 0x6c 0x63 0x6f 0x6d 0x65
-  
-
-
-{
-  (const factorial (function (number) {
-    (if (<= number 1) {
-      (return 1)
-    }
-    {
-      (return (* number (factorial (- number 1))))
-    })
-  }))
-  (print (factorial 5))
-}
+print "Hello world!"
