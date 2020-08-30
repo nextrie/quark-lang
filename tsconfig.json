@@ -17,6 +17,7 @@
         "paths": {
             "vm/*": ["./src/vm/*"],
             "core/*": ["./src/core/*"],
+            "interfaces/*": ["./src/interfaces/*"],
             "tokens": ["./src/core/tokens/tokens.ts"],
             "other/*": ["./src/other/*"],
             "utils": ["./src/utils/*"],

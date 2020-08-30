@@ -16,6 +16,7 @@ module.exports = {
     alias: {
       other: path.resolve(__dirname, 'src/other'),
       vm: path.resolve(__dirname, 'src/vm'),
+      interfaces: path.resolve(__dirname, 'src/interfaces'),
       tokens: path.resolve(__dirname, 'src/core/tokens/tokens.ts'),
       core: path.resolve(__dirname, 'src/core'),
       utils: path.resolve(__dirname, 'src/utils'),

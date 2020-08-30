@@ -3,7 +3,7 @@
                  Parser
 //////////////////////////////////////*/
 
-import { scanner } from './scanner';
+import scanner from './scanner';
 
 export default class Tokenizer {
   public static tokens: Object = {};
