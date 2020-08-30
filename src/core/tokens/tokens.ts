@@ -4,5 +4,6 @@
 //////////////////////////////////////*/
 
 export default {
+  STRING: /".*?"/g,
   PRINT: /print/g,
 };
