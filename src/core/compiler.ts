@@ -47,7 +47,10 @@ export default class Compiler {
         if (bytecode[token]) {
           this.bytecode.slice(-1)[0].push(bytecode[token]);
         } else if (token === 'STRING') {
-          const stringSymbolIdentifier: number = Number(Object.values(bytecode).slice(-1)[0]) + 1;
+          let stringSymbolIdentifier: number;
+          if (Object.values(this.stack.symbols).length > 0) {
+            stringSymbolIdentifier = Number(Object.values(this.stack.symbols).slice(-1)[0]) + 1;
+          } else stringSymbolIdentifier = Number(Object.values(bytecode).slice(-1)[0]) + 1;
           let stringSymbolBytecode: string;
           if (stringSymbolIdentifier < 10) stringSymbolBytecode = `0x0${stringSymbolIdentifier}`;
           else stringSymbolBytecode = `0x${stringSymbolIdentifier}`;
