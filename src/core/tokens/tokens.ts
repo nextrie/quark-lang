@@ -2,3 +2,7 @@
                Quark lang
                  Tokens
 //////////////////////////////////////*/
+
+export default {
+  PRINT: /print/g,
+};
