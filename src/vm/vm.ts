@@ -45,10 +45,18 @@ export default class VirtualMachine {
       line.map((x: string) => {
         if (this.findStateByBytecode(x)) this.state = this.findStateByBytecode(x);
         else if (this.findSymbolByBytecode(x)) {
-          const string: string = this.symbols[this.findSymbolByBytecode(x)]
-            .map((byte: string) => String.fromCharCode(parseInt(byte, 16)))
-            .join('');
-          if (this.state === 'PRINT') process.stdout.write(`${string}\n`);
+          const symbol: any = this.symbols[this.findSymbolByBytecode(x)];
+          let value: string | number;
+          if (symbol.type === 'string') {
+            value = symbol.bytecode
+              .map((byte: string) => String.fromCharCode(parseInt(byte, 16)))
+              .join('');
+          } else if (symbol.type === 'number') {
+            value = symbol.bytecode
+              .map((byte: string) => parseInt(byte, 16))
+              .join('');
+          }
+          if (this.state === 'PRINT') process.stdout.write(`${value}\n`);
         }
         return true;
       });
