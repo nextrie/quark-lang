@@ -5,6 +5,7 @@ import { Stack } from 'interfaces/stack';
 //////////////////////////////////////*/
 
 import { Token } from 'interfaces/token';
+import { VM } from 'interfaces/vm';
 import bytecode from 'vm/bytecode';
 import Tokenizer from './parser';
 import tokens from './tokens/tokens';
@@ -35,7 +36,7 @@ export default class Compiler {
     });
   }
 
-  public compile(): Array<Array<string>> {
+  public compile(): VM {
     this.tokens.map((line) => {
       this.bytecode.push([]);
       line.map((item) => {
@@ -62,6 +63,9 @@ export default class Compiler {
       });
       return true;
     });
-    return this.bytecode;
+    return {
+      stack: this.stack,
+      bytecode: this.bytecode,
+    };
   }
 }
