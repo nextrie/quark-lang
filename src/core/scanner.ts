@@ -39,7 +39,7 @@ export function getNearestToken(tokens: object, string: string): Value {
 
   Object.entries(tokens).map((x) => {
     const tempArray: Array<string> = string.match(tokens[x[0]]);
-    values = updateValues(tempArray, values, x[0]);
+    if (tempArray) values = updateValues(tempArray, values, x[0]);
     return true;
   });
 
@@ -51,14 +51,14 @@ export default function scanner(string: string, tokenizer): Array<Token> {
   const token = [];
   let tmpString: string = string;
 
-  while (string) {
+  while (tmpString) {
     let {
       endToken,
       tokenValue,
       // eslint-disable-next-line prefer-const
       startToken,
       currToken,
-    } = getNearestToken(tokens, string);
+    }: Value = getNearestToken(tokens, tmpString);
     if (startToken !== 0) {
       tokenValue = string.substring(0, startToken);
       currToken = tokenizer.errTok;
