@@ -8,3 +8,7 @@ print text;
 
 number test = 5;
 print test;
+
+number bruh = test;
+
+print bruh;

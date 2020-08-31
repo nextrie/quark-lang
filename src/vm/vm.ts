@@ -68,6 +68,12 @@ export default class VirtualMachine {
       .join('');
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  private checkStackCategory(byte: string): string {
+    if (this.stack.symbols[byte]) return 'symbols';
+    return 'values';
+  }
+
   public run(): void {
     this.bytecode.map((line: Array<string>) => {
       this.expression = [];
@@ -88,7 +94,8 @@ export default class VirtualMachine {
           };
           this.state = 'VARIABLE::DECLARATION';
         } else if (this.state === 'VARIABLE::DECLARATION') {
-          this.stack.values[this.tmp.bytecode].bound = element;
+          if (this.checkStackCategory(element) === 'symbols') this.stack.values[this.tmp.bytecode].bound = element;
+          else this.stack.values[this.tmp.bytecode].bound = this.stack.values[element].bound;
         }
         return true;
       });
