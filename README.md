@@ -64,7 +64,7 @@ NPM > 6
 To run the tests:
 
 ```
-npm run test
+ npm run test
 ```
 
 ### Break down into end to end tests
@@ -77,7 +77,7 @@ The linter is present in order to allow anyone to be able to contribute while
 being in the main coherence of the code.
 
 ```
-npm run lint
+ npm run lint
 ```
 
 ## 🎈 Usage <a name="usage"></a>
@@ -108,13 +108,18 @@ To deploy Quark lang, do:
 To build the project, do:
 
 ```bash
-$ npm run bundle 
-# That generate file called bundle.js, just run it with : node dist/bundle.js
+ $ npm run bundle 
+ # That generate file called bundle.js, just run it with : node dist/bundle.js
 
-# OR
+ # OR
 
-$ docker-compose build
-$ docker run quark-lang_app
+ $ docker-compose build
+ # OR
+ $ yarn docker:build
+
+ $ docker run quark-lang_app
+ # OR
+ $ yarn docker:start
 
 ```
 
