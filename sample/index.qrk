@@ -4,4 +4,10 @@ print 156;
 
 string test = "Hello";
 
-print test;
+print test + 5 * 4;
+
+print test + "test";
+
+number testnumber = 50;
+
+print testnumber;

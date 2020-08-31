@@ -46,121 +46,117 @@ export default class Compiler {
     return true;
   }
 
-  private findIdentifier(): string {
-    let stringSymbolIdentifier: number;
+  // eslint-disable-next-line class-methods-use-this
+  private stringToBytecode(text: string): Array<string> {
+    return text
+      .slice(1, text.length - 1)
+      .split('')
+      .map((x) => x.charCodeAt(0))
+      .map((x) => x.toString(16))
+      .map((x) => `0x${x}`);
+  }
 
-    let symbolsSymbolIdentifier: number;
-    let valueSymbolIdentifier: number;
+  // eslint-disable-next-line class-methods-use-this
+  private numberToBytecode(number: number | string): Array<string> {
+    return [`0x${Number(number).toString(16)}`];
+  }
 
-    if (Object.values(this.stack.symbols).length > 0
-        || Object.values(this.stack.values).length > 0) {
-      symbolsSymbolIdentifier = Number(Object.keys(this.stack.symbols).slice(-1)[0]) + 1;
-      valueSymbolIdentifier = Number(Object.keys(this.stack.values).slice(-1)[0]) + 1;
-      if (Number.isNaN(symbolsSymbolIdentifier)) stringSymbolIdentifier = valueSymbolIdentifier;
-      // eslint-disable-next-line max-len
-      else if (Number.isNaN(valueSymbolIdentifier)) stringSymbolIdentifier = symbolsSymbolIdentifier;
-      if (!stringSymbolIdentifier) {
-        stringSymbolIdentifier = symbolsSymbolIdentifier > valueSymbolIdentifier
-          ? symbolsSymbolIdentifier
-          : valueSymbolIdentifier;
-      }
-    } else stringSymbolIdentifier = Number(Object.values(bytecode).slice(-1)[0]) + 1;
-    let stringSymbolBytecode: string;
-    if (stringSymbolIdentifier < 10) stringSymbolBytecode = `0x0${stringSymbolIdentifier}`;
-    else stringSymbolBytecode = `0x${stringSymbolIdentifier}`;
-    return stringSymbolBytecode;
+  private getBytecodeIdentifier(): string | null {
+    let symbolsIdentifier: number;
+    let valuesIdentifier: number;
+    const symbols: Array<string> = Object.keys(this.stack.symbols);
+    const values: Array<string> = Object.keys(this.stack.values);
+    if (symbols.length > 0) {
+      symbolsIdentifier = Number(symbols.slice(-1)[0]) + 1;
+    } else if (values.length > 0) {
+      valuesIdentifier = Number(values.slice(-1)[0]) + 1;
+    } else {
+      return `0x0${(Number(Object.values(bytecode).slice(-1)[0]) + 1).toString(16)}`;
+    }
+
+    if (!symbolsIdentifier || Number.isNaN(symbolsIdentifier)) {
+      if (Number.isNaN(symbolsIdentifier)) return `0x${valuesIdentifier}`;
+      return `0x${valuesIdentifier < 10 ? `0${valuesIdentifier}` : valuesIdentifier}`;
+    }
+    if (!valuesIdentifier || Number.isNaN(valuesIdentifier)) {
+      if (Number.isNaN(valuesIdentifier)) return `0x${symbolsIdentifier}`;
+      return `0x${symbolsIdentifier < 10 ? `0${symbolsIdentifier}` : symbolsIdentifier}`;
+    }
+    if (symbolsIdentifier && valuesIdentifier) {
+      return symbolsIdentifier > valuesIdentifier
+        ? `0x${symbolsIdentifier < 10 ? `0${symbolsIdentifier}` : symbolsIdentifier}`
+        : `0x${valuesIdentifier < 10 ? `0${valuesIdentifier}` : valuesIdentifier}`;
+    }
+    return null;
+  }
+
+  private isValueExists(word: string): boolean {
+    if (Object
+      .values(this.stack.values)
+      .filter((x) => x.name === word)
+      .length > 0
+    ) return true;
+    return false;
+  }
+
+  private getValueBytecode(word: string): string | null {
+    const results: Array<string> | null = Object
+      .entries(this.stack.values)
+      .filter((x) => x[1].name === word)
+      .map((x) => x[0]);
+    if (results && results.length > 0) return results[0];
+    return null;
   }
 
   public compile(): VM {
     this.tokens.map((line) => {
       this.bytecode.push([]);
-      let tmp = {
-        type: '',
-        name: '',
-        value: '',
-      };
       this.state = [];
       line.map((item) => {
         const {
           token,
           value,
         }: Token = item;
-        if (bytecode[token]) {
-          this.bytecode.slice(-1)[0].push(bytecode[token]);
-        }
-        if (token === 'STRING') {
-          const stringSymbolBytecode: string = this.findIdentifier();
-          this.stack.symbols[stringSymbolBytecode] = {
-            bytecode: value
-              .slice(1, value.length - 1)
-              .split('')
-              .map((x) => x.charCodeAt(0))
-              .map((x) => x.toString(16))
-              .map((x) => `0x${x}`),
-            type: 'string',
-          };
-          if (this.state.length > 0 && this.state.slice(-1)[0] === 'VARIABLE::DECLARATION') {
-            this.stack.values[tmp.name].value = stringSymbolBytecode;
-          }
-          this.bytecode.slice(-1)[0].push(stringSymbolBytecode);
-        } else if (token === 'NUMBER') {
-          const numberSymbolBytecode: string = this.findIdentifier();
-          this.stack.symbols[numberSymbolBytecode] = {
-            bytecode: [`0x${Number(value).toString(16)}`],
-            type: 'number',
-          };
-          this.bytecode.slice(-1)[0].push(numberSymbolBytecode);
-        } else if (token === 'TYPE') {
-          this.state.push(`VARIABLE::${value.toUpperCase()}`);
-          tmp.type = value;
-        } else if (token === 'WORD') {
-          const variableNameBytecode: Array<string> = value
-            .split('')
-            .map((x) => x.charCodeAt(0))
-            .map((x) => x.toString(16))
-            .map((x) => `0x${x}`);
-          if (this.state.length > 0 && this.state.slice(-1)[0].startsWith('VARIABLE::')) {
-            const variableSymbolBytecode: string = this.findIdentifier();
-            if (Object.values(this.stack.values)[0]) {
-              if (!this.arrayContainsArray(
-                Object.values(this.stack.values)[0].bytecode,
-                variableNameBytecode,
-              )) {
-                this.stack.values[variableSymbolBytecode] = {
-                  bytecode: variableNameBytecode,
-                  type: tmp.type,
-                };
-              }
-            } else {
-              this.stack.values[variableSymbolBytecode] = {
-                bytecode: variableNameBytecode,
-                type: tmp.type,
-              };
+        if (!token) return true;
+        if (bytecode[token]) this.bytecode.slice(-1)[0].push(bytecode[token]);
+        else {
+          switch (token) {
+            case 'STRING': {
+              const identifier: string = this.getBytecodeIdentifier();
+              this.stack.symbols[identifier] = this.stringToBytecode(value);
+              this.bytecode.slice(-1)[0].push(identifier);
+              break;
             }
-            tmp.name = variableSymbolBytecode;
-            this.state.pop();
-            this.state.push('VARIABLE::DECLARATION');
-            this.bytecode.slice(-1)[0].push(tmp.name);
-          } else {
-            this.bytecode.slice(-1)[0].push(
-              Object
-                .entries(this.stack.values)
-                .filter((x) => this.arrayContainsArray(x[1], variableNameBytecode))[0][0],
-            );
+            case 'NUMBER': {
+              const identifier: string = this.getBytecodeIdentifier();
+              this.stack.symbols[identifier] = this.numberToBytecode(value);
+              this.bytecode.slice(-1)[0].push(identifier);
+              break;
+            }
+            case 'WORD': {
+              if (this.isValueExists(value)) {
+                this.bytecode.slice(-1)[0].push(this.getValueBytecode(value));
+              } else {
+                const identifier: string = this.getBytecodeIdentifier();
+                this.stack.values[identifier] = {
+                  name: value,
+                };
+                this.bytecode.slice(-1)[0].push(identifier);
+              }
+              break;
+            }
+            default: {
+              break;
+            }
           }
         }
         return true;
       });
-      tmp = {
-        name: '',
-        type: '',
-        value: '',
-      };
       return true;
     });
     return {
       stack: this.stack,
-      bytecode: this.bytecode,
+      bytecode: this.bytecode.filter((x) => x.length > 0),
     };
   }
 }

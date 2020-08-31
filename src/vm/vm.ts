@@ -6,7 +6,7 @@
 import { VM } from 'interfaces/vm';
 import { Stack } from 'interfaces/stack';
 import bytecode from 'vm/bytecode';
-import operators from 'core/tokens/operators';
+// import operators from 'core/tokens/operators';
 // import * as jesp from 'jsep';
 
 export default class VirtualMachine {
@@ -54,46 +54,11 @@ export default class VirtualMachine {
 
   public run(): void {
     this.bytecode.map((line: Array<string>) => {
-      this.expression = [];
-      this.state = '';
-      line.map((x: string) => {
-        if (this.findStateByBytecode(x)) {
-          const token: string = this.findStateByBytecode(x);
-          if (token === 'PRINT') {
-            this.state = token;
-          } else if (token === 'TYPE') {
-            this.state = 'VARIABLE::DECLARATION';
-          } else {
-            this.expression.push(operators[token]);
-          }
-        } else if (this.findSymbolByBytecode(x)) {
-          const symbol: any = this.symbols[this.findSymbolByBytecode(x)];
-          if (symbol.type === 'string') {
-            this.expression.push(symbol.bytecode
-              .map((byte: string) => String.fromCharCode(parseInt(byte, 16)))
-              .join(''));
-          } else if (symbol.type === 'number') {
-            this.expression.push(symbol.bytecode
-              .map((byte: string) => parseInt(byte, 16))
-              .join(''));
-          }
-        } else if (this.findValueByBytecode(x)) {
-          const variableBytecode: string = this.values[this.findValueByBytecode(x)].value;
-          const symbol: any = this.symbols[variableBytecode];
-          if (symbol.type === 'string') {
-            this.expression.push(symbol.bytecode
-              .map((byte: string) => String.fromCharCode(parseInt(byte, 16)))
-              .join(''));
-          } else if (symbol.type === 'number') {
-            this.expression.push(symbol.bytecode
-              .map((byte: string) => parseInt(byte, 16))
-              .join(''));
-          }
-        }
+      line.map((element: string) => {
+        process.stdout.write(`${element} `);
         return true;
       });
-      // JSON.stringify(jesp.default(this.expression.join(' ')), null, 2)
-      if (this.state === 'PRINT') process.stdout.write(`${this.expression.join(' ')}\n`);
+      process.stdout.write('\n');
       return true;
     });
   }

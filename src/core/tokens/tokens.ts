@@ -7,10 +7,8 @@ export default {
   STRING: /".*?"/,
   NUMBER: /\d+/,
 
-  TYPE: /(string|int)/,
-
   PRINT: /print/,
-  SPACE: /\s+/,
+  TYPE: /(string|number)/,
 
   ADD: /\+/,
   MUL: /\*/,
