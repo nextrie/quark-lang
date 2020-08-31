@@ -19,7 +19,7 @@
 ---
 
 <p align="center"> 
-    Quark is a self-transpiled programming language written in TypeScript.
+    Quark is a compiled programming language written in TypeScript.
     <br> 
 </p>
 
