@@ -154,13 +154,17 @@ export default class Compiler {
       });
       return true;
     });
+    return this.getCompiledCode();
+  }
+
+  public getCompiledCode(): VM {
     return {
       stack: this.stack,
       bytecode: this.bytecode.filter((x) => x.length > 0),
     };
   }
 
-  public getCompiledCode(): string | null {
+  public printCompiledCode(): void {
     const styledBytecode: string = this.bytecode
       .filter((x) => x.length > 0)
       .map((x) => x.join(' '))
@@ -169,7 +173,7 @@ export default class Compiler {
       .entries(this.stack.symbols)
       .map((x) => `${x[0]}\n  ${x[1].join(' ')}`)
       .join('\n');
-    if (styledBytecode && styledSymbols) return `\n${styledSymbols}\n\n${styledBytecode}\n`;
-    return null;
+    if (styledBytecode && styledSymbols) process.stdout.write(`\n${styledSymbols}\n\n${styledBytecode}\n\n`);
+    else process.stdout.write('NONE\n');
   }
 }
