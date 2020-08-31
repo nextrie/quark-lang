@@ -10,5 +10,4 @@ import VirtualMachine from 'vm/vm';
 const compiledOutput = new Compiler(FS.readFileSync('./sample/index.qrk', 'utf-8'));
 
 const vm = new VirtualMachine(compiledOutput.compile());
-console.log(compiledOutput.getCompiledCode());
 vm.run();

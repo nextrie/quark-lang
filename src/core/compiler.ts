@@ -123,13 +123,19 @@ export default class Compiler {
           switch (token) {
             case 'STRING': {
               const identifier: string = this.getBytecodeIdentifier();
-              this.stack.symbols[identifier] = this.stringToBytecode(value);
+              this.stack.symbols[identifier] = {
+                value: this.stringToBytecode(value),
+                type: 'string',
+              };
               this.bytecode.slice(-1)[0].push(identifier);
               break;
             }
             case 'NUMBER': {
               const identifier: string = this.getBytecodeIdentifier();
-              this.stack.symbols[identifier] = this.numberToBytecode(value);
+              this.stack.symbols[identifier] = {
+                value: this.numberToBytecode(value),
+                type: 'number',
+              };
               this.bytecode.slice(-1)[0].push(identifier);
               break;
             }

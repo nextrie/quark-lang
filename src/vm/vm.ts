@@ -6,6 +6,7 @@
 import { VM } from 'interfaces/vm';
 import { Stack } from 'interfaces/stack';
 import bytecode from 'vm/bytecode';
+import { Symbol } from 'interfaces/symbol';
 // import operators from 'core/tokens/operators';
 // import * as jesp from 'jsep';
 
@@ -36,25 +37,47 @@ export default class VirtualMachine {
 
   // eslint-disable-next-line class-methods-use-this
   private findStateByBytecode(byte: string): string | undefined {
-    const results: [string, string][] = Object.entries(bytecode).filter((x) => x[1] === byte);
-    return results && results.length > 0 ? results[0][0] : undefined;
+    const results: Array<string> = Object
+      .entries(bytecode)
+      .filter((x) => x[1] === byte)
+      .map((x) => x[0]);
+    return results.length > 0 ? results[0] : undefined;
+  }
+
+  private findSymbolByBytecode(byte: string): Symbol | undefined {
+    const results: Array<Symbol> = Object
+      .entries(this.symbols)
+      .filter((x) => x[0] === byte)
+      .map((x) => x[1]);
+    return results.length > 0 ? results[0] : undefined;
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private findSymbolByBytecode(byte: string): string | undefined {
-    const results: [string, string][] = Object.entries(this.symbols).filter((x) => x[0] === byte);
-    return results && results.length > 0 ? results[0][0] : undefined;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  private findValueByBytecode(byte: string): string | undefined {
-    const results: [string, string][] = Object.entries(this.values).filter((x) => x[0] === byte);
-    return results && results.length > 0 ? results[0][0] : undefined;
+  private bytecodesToValue(bytes: Symbol): string | undefined {
+    if (bytes.type === 'string') {
+      return bytes.value
+        .map((x) => parseInt(x, 16))
+        .map((x) => String.fromCharCode(x))
+        .join('');
+    }
+    return bytes.value
+      .map((x) => parseInt(x, 16))
+      .join('');
   }
 
   public run(): void {
     this.bytecode.map((line: Array<string>) => {
-      line.map(() => true);
+      this.expression = [];
+      this.state = '';
+      line.map((element: string) => {
+        if (this.findStateByBytecode(element)) this.state = this.findStateByBytecode(element);
+        else if (this.state === 'PRINT') {
+          const bytes: Symbol = this.findSymbolByBytecode(element);
+          this.expression.push(this.bytecodesToValue(bytes));
+        }
+        return true;
+      });
+      if (this.state === 'PRINT') process.stdout.write(`${this.expression.join(' ')}\n`);
       return true;
     });
   }
