@@ -23,6 +23,4 @@ WORKDIR /usr/src/app
 COPY --from=BUILD_IMAGE /usr/src/app/dist ./dist
 COPY --from=BUILD_IMAGE /usr/src/app/sample ./sample
 
-EXPOSE 3030
-
 CMD [ "node", "./dist/bundle.js" ]
