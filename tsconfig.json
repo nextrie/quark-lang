@@ -9,9 +9,10 @@
         "target": "es5",
         "module": "CommonJS",
         "types": ["node", "mocha", "chai"],
-        "moduleResolution": "classic",
+        "moduleResolution": "node",
         "downlevelIteration": true,
         "allowJs": true,
+        "esModuleInterop": true,
 
         "baseUrl": ".",
         "paths": {
@@ -21,7 +22,8 @@
             "tokens": ["./src/core/tokens/tokens.ts"],
             "other/*": ["./src/other/*"],
             "utils": ["./src/utils/*"],
-            "tests/*": ["./tests/*"]
+            "tests/*": ["./tests/*"],
+            "modules/*": ["node_modules/*"]
         }
         
     },

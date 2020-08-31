@@ -20,7 +20,8 @@ module.exports = {
       tokens: path.resolve(__dirname, 'src/core/tokens/tokens.ts'),
       core: path.resolve(__dirname, 'src/core'),
       utils: path.resolve(__dirname, 'src/utils'),
-      tests: path.resolve(__dirname, 'tests')
+      tests: path.resolve(__dirname, 'tests'),
+      modules: path.resolve(__dirname, 'node_modules'),
     }
   },
   output: {

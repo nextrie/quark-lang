@@ -7,6 +7,7 @@ import { VM } from 'interfaces/vm';
 import { Stack } from 'interfaces/stack';
 import bytecode from 'vm/bytecode';
 import operators from 'core/tokens/operators';
+import * as jesp from 'jsep';
 
 export default class VirtualMachine {
   private vm: VM;
@@ -69,8 +70,7 @@ export default class VirtualMachine {
         }
         return true;
       });
-      // eslint-disable-next-line no-eval
-      if (this.state === 'PRINT') process.stdout.write(`${eval(this.expression.join(' '))}\n`);
+      if (this.state === 'PRINT') process.stdout.write(`${JSON.stringify(jesp.default(this.expression.join(' ')), null, 2)}\n`);
       return true;
     });
   }
