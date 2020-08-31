@@ -9,6 +9,7 @@ const bytecode: object = {
   MUL: '0x03',
   DIV: '0x04',
   MIN: '0x05',
+  TYPE: '0x06',
 };
 
 export default bytecode;

@@ -7,6 +7,8 @@ export default {
   STRING: /".*?"/,
   NUMBER: /\d+/,
 
+  TYPE: /(string|int)/,
+
   PRINT: /print/,
   SPACE: /\s+/,
 
@@ -16,4 +18,5 @@ export default {
   MIN: /-/,
 
   END: /;/,
+  WORD: /\w+/,
 };
