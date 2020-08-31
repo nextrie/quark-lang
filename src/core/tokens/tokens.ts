@@ -10,5 +10,10 @@ export default {
   PRINT: /print/,
   SPACE: /\s+/,
 
-  PLUS: /\+/,
+  ADD: /\+/,
+  MUL: /\*/,
+  DIV: /\\/,
+  MIN: /-/,
+
+  END: /;/,
 };
