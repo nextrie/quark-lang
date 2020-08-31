@@ -54,11 +54,7 @@ export default class VirtualMachine {
 
   public run(): void {
     this.bytecode.map((line: Array<string>) => {
-      line.map((element: string) => {
-        process.stdout.write(`${element} `);
-        return true;
-      });
-      process.stdout.write('\n');
+      line.map(() => true);
       return true;
     });
   }

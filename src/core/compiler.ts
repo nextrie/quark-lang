@@ -159,4 +159,17 @@ export default class Compiler {
       bytecode: this.bytecode.filter((x) => x.length > 0),
     };
   }
+
+  public getCompiledCode(): string | null {
+    const styledBytecode: string = this.bytecode
+      .filter((x) => x.length > 0)
+      .map((x) => x.join(' '))
+      .join('\n');
+    const styledSymbols: string = Object
+      .entries(this.stack.symbols)
+      .map((x) => `${x[0]}\n  ${x[1].join(' ')}`)
+      .join('\n');
+    if (styledBytecode && styledSymbols) return `\n${styledSymbols}\n\n${styledBytecode}\n`;
+    return null;
+  }
 }
