@@ -2,6 +2,7 @@ const path = require('path')
 
 module.exports = {
   entry: './src/index.ts',
+  target: 'node',
   module: {
     rules: [
       {
@@ -10,6 +11,9 @@ module.exports = {
         exclude: /node_modules/,
       },
     ],
+  },
+  node: {
+    fs: 'empty'
   },
   resolve: {
     extensions: [ '.ts' ],
