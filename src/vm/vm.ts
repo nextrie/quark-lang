@@ -104,6 +104,15 @@ export default class VirtualMachine {
           this.state = 'VARIABLE::DECLARATION';
         } else if (this.state === 'VARIABLE::DECLARATION') {
           this.stack.values[this.tmp.bytecode].bound = element;
+        } else if (this.state === 'VARIABLE::MODIFICATION') {
+          const symbol: Symbol = this.findSymbolByBytecode(element);
+          this.symbols[this.stack.values[this.tmp.bytecode].bound].value = symbol.value;
+        } else if (this.stack.values[element]) {
+          this.state = 'VARIABLE::MODIFICATION';
+          this.tmp = {
+            name: this.stack.values[element].name,
+            bytecode: element,
+          };
         }
         return true;
       });
