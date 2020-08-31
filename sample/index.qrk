@@ -3,3 +3,5 @@ print "eheh";
 print 156;
 
 print 5 + 4 * 9;
+
+print "bruh" + "eheh";
