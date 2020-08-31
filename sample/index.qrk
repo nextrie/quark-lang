@@ -1,3 +1,10 @@
 print "Hello world!";
 print "eheh";
 print 156;
+ 
+string text = "Hello eheh";
+
+print text;
+
+number test = 5;
+print test;

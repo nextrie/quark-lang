@@ -27,6 +27,8 @@ export default class VirtualMachine {
 
   private variables: object = {};
 
+  private tmp: any;
+
   constructor(vm: VM) {
     this.vm = vm;
     this.stack = this.vm.stack;
@@ -54,6 +56,7 @@ export default class VirtualMachine {
 
   // eslint-disable-next-line class-methods-use-this
   private bytecodesToValue(bytes: Symbol): string | undefined {
+    if (!bytes) return undefined;
     if (bytes.type === 'string') {
       return bytes.value
         .map((x) => parseInt(x, 16))
@@ -73,7 +76,19 @@ export default class VirtualMachine {
         if (this.findStateByBytecode(element)) this.state = this.findStateByBytecode(element);
         else if (this.state === 'PRINT') {
           const bytes: Symbol = this.findSymbolByBytecode(element);
-          this.expression.push(this.bytecodesToValue(bytes));
+          if (bytes) this.expression.push(this.bytecodesToValue(bytes));
+          else {
+            const boundBytes: Symbol = this.findSymbolByBytecode(this.stack.values[element].bound);
+            if (boundBytes) this.expression.push(this.bytecodesToValue(boundBytes));
+          }
+        } else if (this.state === 'TYPE') {
+          this.tmp = {
+            name: this.stack.values[element].name,
+            bytecode: element,
+          };
+          this.state = 'VARIABLE::DECLARATION';
+        } else if (this.state === 'VARIABLE::DECLARATION') {
+          this.stack.values[this.tmp.bytecode].bound = element;
         }
         return true;
       });

@@ -17,6 +17,8 @@ export default class Compiler {
 
   private bytecode: Array<Array<string>> = [];
 
+  private lastBytecode: string = Object.values(bytecode).slice(-1)[0];
+
   private stack: Stack = {
     symbols: {
 
@@ -61,33 +63,12 @@ export default class Compiler {
     return [`0x${Number(number).toString(16)}`];
   }
 
-  private getBytecodeIdentifier(): string | null {
-    let symbolsIdentifier: number;
-    let valuesIdentifier: number;
-    const symbols: Array<string> = Object.keys(this.stack.symbols);
-    const values: Array<string> = Object.keys(this.stack.values);
-    if (symbols.length > 0) {
-      symbolsIdentifier = Number(symbols.slice(-1)[0]) + 1;
-    } else if (values.length > 0) {
-      valuesIdentifier = Number(values.slice(-1)[0]) + 1;
-    } else {
-      return `0x0${(Number(Object.values(bytecode).slice(-1)[0]) + 1).toString(16)}`;
-    }
-
-    if (!symbolsIdentifier || Number.isNaN(symbolsIdentifier)) {
-      if (Number.isNaN(symbolsIdentifier)) return `0x${valuesIdentifier}`;
-      return `0x${valuesIdentifier < 10 ? `0${valuesIdentifier}` : valuesIdentifier}`;
-    }
-    if (!valuesIdentifier || Number.isNaN(valuesIdentifier)) {
-      if (Number.isNaN(valuesIdentifier)) return `0x${symbolsIdentifier}`;
-      return `0x${symbolsIdentifier < 10 ? `0${symbolsIdentifier}` : symbolsIdentifier}`;
-    }
-    if (symbolsIdentifier && valuesIdentifier) {
-      return symbolsIdentifier > valuesIdentifier
-        ? `0x${symbolsIdentifier < 10 ? `0${symbolsIdentifier}` : symbolsIdentifier}`
-        : `0x${valuesIdentifier < 10 ? `0${valuesIdentifier}` : valuesIdentifier}`;
-    }
-    return null;
+  private getBytecodeIdentifier(): string {
+    let byte: string = (parseInt(this.lastBytecode, 16) + 1).toString(16);
+    if (byte.length === 2) byte = `0x${byte}`;
+    else byte = `0x0${byte}`;
+    this.lastBytecode = byte;
+    return byte;
   }
 
   private isValueExists(word: string): boolean {
@@ -146,6 +127,7 @@ export default class Compiler {
                 const identifier: string = this.getBytecodeIdentifier();
                 this.stack.values[identifier] = {
                   name: value,
+                  bound: '',
                 };
                 this.bytecode.slice(-1)[0].push(identifier);
               }
