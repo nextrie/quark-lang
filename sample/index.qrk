@@ -23,3 +23,11 @@ print eheh;
 
 text = "Bruh";
 print eheh;
+
+string hum = eheh;
+print hum;
+
+bruh = test;
+print bruh;
+test = 6;
+print bruh;

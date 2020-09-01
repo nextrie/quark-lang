@@ -95,7 +95,6 @@ export default class VirtualMachine {
               bytes = this.getInitialSymbolInValue(this.stack.values[element]);
             }
           }
-
           if (bytes) this.expression.push(this.bytecodesToValue(bytes));
           else {
             const boundBytes: Symbol = this.findSymbolByBytecode(this.stack.values[element].bound);
@@ -110,8 +109,12 @@ export default class VirtualMachine {
         } else if (this.state === 'VARIABLE::DECLARATION') {
           this.stack.values[this.tmp.bytecode].bound = element;
         } else if (this.state === 'VARIABLE::MODIFICATION') {
-          const symbol: Symbol = this.findSymbolByBytecode(element);
-          this.symbols[this.stack.values[this.tmp.bytecode].bound].value = symbol.value;
+          if (this.checkStackCategory(element) === 'symbols') {
+            const symbol: Symbol = this.findSymbolByBytecode(element);
+            this.symbols[this.stack.values[this.tmp.bytecode].bound].value = symbol.value;
+          } else {
+            this.stack.values[this.tmp.bytecode].bound = this.stack.values[element].bound;
+          }
         } else if (this.stack.values[element]) {
           this.state = 'VARIABLE::MODIFICATION';
           this.tmp = {
