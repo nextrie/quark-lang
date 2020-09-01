@@ -10,6 +10,7 @@ const bytecode: object = {
   DIV: '0x04',
   MIN: '0x05',
   TYPE: '0x06',
+  REFERENCE: '0x07',
 };
 
 export default bytecode;

@@ -1,35 +1,16 @@
-print "Hello world!";
-print "eheh";
-print 156;
- 
-string text = "Hello eheh";
+string text = "bruh";
+print text; # bruh
 
+string eheh = &text;
+print eheh; # bruh
+
+string hum = text;
+print hum; # bruh
+
+text = "eheh";
 print text;
+print eheh;
+print hum; # bruh
 
-number test = 5;
+string test = &"Hello world"
 print test;
-
-number bruh = test;
-
-print bruh;
-
-test = 4
-
-print bruh;
-
-string eheh = text;
-
-print eheh;
-
-text = "Bruh";
-print eheh;
-
-string hum = eheh;
-print hum;
-
-bruh = test;
-print bruh;
-test = 6;
-print bruh;
-
-print "\n"

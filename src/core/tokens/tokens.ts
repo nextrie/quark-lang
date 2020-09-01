@@ -4,6 +4,7 @@
 //////////////////////////////////////*/
 
 export default {
+  COMMENT: /#.*?/,
   STRING: /".*?"/,
   NUMBER: /\d+/,
 
@@ -14,6 +15,8 @@ export default {
   MUL: /\*/,
   DIV: /\\/,
   MIN: /-/,
+
+  REFERENCE: /&/,
 
   END: /;/,
   WORD: /\w+/,

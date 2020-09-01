@@ -69,6 +69,14 @@ export default class VirtualMachine {
       .join('');
   }
 
+  private getBytecodeIdentifier(): string {
+    let byte: string = (parseInt(this.vm.lastBytecode, 16) + 1).toString(16);
+    if (byte.length === 2) byte = `0x${byte}`;
+    else byte = `0x0${byte}`;
+    this.vm.lastBytecode = byte;
+    return byte;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   private checkStackCategory(byte: string): string {
     if (this.stack.symbols[byte]) return 'symbols';
@@ -86,14 +94,17 @@ export default class VirtualMachine {
       this.expression = [];
       this.state = '';
       line.map((element: string) => {
-        if (this.findStateByBytecode(element)) this.state = this.findStateByBytecode(element);
-        else if (this.state === 'PRINT') {
+        if (this.findStateByBytecode(element)) {
+          if (this.state.startsWith('VARIABLE::')) {
+            this.state = `VARIABLE::${this.findStateByBytecode(element)}`;
+          } else this.state = this.findStateByBytecode(element);
+        } else if (this.state === 'PRINT') {
           let bytes: Symbol;
           if (!this.stack.values[element]) bytes = this.findSymbolByBytecode(element);
           else if (this.checkStackCategory(this.stack.values[element]) === 'values') {
             if (this.checkStackCategory(this.stack.values[element].bound) === 'values') {
               bytes = this.getInitialSymbolInValue(this.stack.values[element]);
-            }
+            } else bytes = this.findSymbolByBytecode(this.stack.values[element].bound);
           }
           if (bytes) this.expression.push(this.bytecodesToValue(bytes));
           else {
@@ -106,8 +117,18 @@ export default class VirtualMachine {
             bytecode: element,
           };
           this.state = 'VARIABLE::DECLARATION';
-        } else if (this.state === 'VARIABLE::DECLARATION') {
+        } else if (this.state === 'VARIABLE::REFERENCE') {
           this.stack.values[this.tmp.bytecode].bound = element;
+        } else if (this.state === 'VARIABLE::DECLARATION') {
+          if (this.checkStackCategory(element) === 'values') {
+            const identifier: string = this.getBytecodeIdentifier();
+            const symbol: Symbol = this.getInitialSymbolInValue(this.stack.values[element]);
+            this.stack.symbols[identifier] = {
+              value: symbol.value,
+              type: symbol.type,
+            };
+            this.stack.values[this.tmp.bytecode].bound = identifier;
+          } else this.stack.values[this.tmp.bytecode].bound = element;
         } else if (this.state === 'VARIABLE::MODIFICATION') {
           if (this.checkStackCategory(element) === 'symbols') {
             const symbol: Symbol = this.findSymbolByBytecode(element);

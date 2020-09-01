@@ -149,6 +149,7 @@ export default class Compiler {
     return {
       stack: this.stack,
       bytecode: this.bytecode.filter((x) => x.length > 0),
+      lastBytecode: this.lastBytecode,
     };
   }
 
