@@ -31,3 +31,5 @@ bruh = test;
 print bruh;
 test = 6;
 print bruh;
+
+print "\n"

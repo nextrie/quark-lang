@@ -124,7 +124,16 @@ export default class VirtualMachine {
         }
         return true;
       });
-      if (this.state === 'PRINT') process.stdout.write(`${this.expression.join(' ')}\n`);
+      if (this.state === 'PRINT') {
+        this.expression = this.expression
+          .map((element: string) => {
+            if (!element.includes('\\n')) return element;
+            process.stdout.write('\n');
+            return undefined;
+          })
+          .filter((x: string | undefined) => x);
+        if (this.expression.length > 0) process.stdout.write(`${this.expression.join(' ')}\n`);
+      }
       return true;
     });
   }
