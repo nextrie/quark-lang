@@ -19,13 +19,13 @@ export default class Compiler {
 
   private lastBytecode: string = Object.values(bytecode).slice(-1)[0];
 
+  private lastToken: Token;
+
+  private tmp: any;
+
   private stack: Stack = {
-    symbols: {
-
-    },
-    values: {
-
-    },
+    symbols: {},
+    values: {},
   };
 
   private state: Array<string> = [];
@@ -33,7 +33,11 @@ export default class Compiler {
   constructor(content: string) {
     Tokenizer.addTokenSet(tokens);
 
-    this.content = content.split(/\r?\n/g);
+    this.content = content
+      .split(/\r?\n/g)
+      .join('')
+      .split(/;/g)
+      .filter((x) => x.length > 0);
     this.content.map((line: string) => {
       this.tokens.push(Tokenizer.tokenize(line));
       return true;
@@ -93,6 +97,7 @@ export default class Compiler {
     this.tokens.map((line) => {
       this.bytecode.push([]);
       this.state = [];
+      this.tmp = {};
       line.map((item) => {
         const {
           token,
@@ -108,7 +113,9 @@ export default class Compiler {
                 value: this.stringToBytecode(value),
                 type: 'string',
               };
-              this.bytecode.slice(-1)[0].push(identifier);
+              if (this.state.includes('ARRAY::DECLARATION')) {
+                this.stack.values[this.tmp.bytecodeArray].bound.push(identifier);
+              } else this.bytecode.slice(-1)[0].push(identifier);
               break;
             }
             case 'NUMBER': {
@@ -117,7 +124,9 @@ export default class Compiler {
                 value: this.numberToBytecode(value),
                 type: 'number',
               };
-              this.bytecode.slice(-1)[0].push(identifier);
+              if (this.state.includes('ARRAY::DECLARATION')) {
+                this.stack.values[this.tmp.bytecodeArray].bound.push(identifier);
+              } else this.bytecode.slice(-1)[0].push(identifier);
               break;
             }
             case 'WORD': {
@@ -125,9 +134,26 @@ export default class Compiler {
                 this.bytecode.slice(-1)[0].push(this.getValueBytecode(value));
               } else {
                 const identifier: string = this.getBytecodeIdentifier();
+                this.tmp.variableName = identifier;
                 this.stack.values[identifier] = {
                   name: value,
-                  bound: '',
+                  bound: [],
+                };
+                if (this.state.includes('ARRAY::DECLARATION')) {
+                  this.stack.values[this.tmp.bytecodeArray].bound.push(identifier);
+                } else this.bytecode.slice(-1)[0].push(identifier);
+              }
+              break;
+            }
+            case 'BRACKET_OP': {
+              if (this.lastToken.token !== 'WORD') {
+                this.state.push('ARRAY::DECLARATION');
+                const identifier: string = this.getBytecodeIdentifier();
+                this.tmp.bytecodeArray = identifier;
+                this.stack.values[this.tmp.variableName].bound.push(identifier);
+                this.stack.values[identifier] = {
+                  type: 'array',
+                  bound: [],
                 };
                 this.bytecode.slice(-1)[0].push(identifier);
               }
@@ -138,6 +164,7 @@ export default class Compiler {
             }
           }
         }
+        this.lastToken = item;
         return true;
       });
       return true;

@@ -1,16 +1,22 @@
-string text = "bruh";
-print text; # bruh
+object myClass;
+myClass.prenom = '';
+myClass.constructor = int (string prenom) {
+  myClass.prenom = prenom;
+}
+myClass.welcome = void () {
+  print "Bonjour" prenom;
+}
 
-string eheh = &text;
-print eheh; # bruh
 
-string hum = text;
-print hum; # bruh
+# ARRAY:
 
-text = "eheh";
-print text;
-print eheh;
-print hum; # bruh
+final object array = {
+  0: "test",
+  1: "eheh",
+  2: {
+    0: "hey",
+    1: "bruh"
+  }
+};
 
-string test = &"Hello world"
-print test;
+print array[2][0];

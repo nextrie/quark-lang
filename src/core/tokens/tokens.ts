@@ -9,7 +9,7 @@ export default {
   NUMBER: /\d+/,
 
   PRINT: /print/,
-  TYPE: /(string|number)/,
+  TYPE: /(String|Number|Array<.*?>)/,
 
   ADD: /\+/,
   MUL: /\*/,
@@ -17,6 +17,12 @@ export default {
   MIN: /-/,
 
   REFERENCE: /&/,
+
+  BRACKET_OP: /\[/,
+  BRACKET_CL: /\]/,
+  COMMA: /,/,
+
+  EQUAL: /=/,
 
   END: /;/,
   WORD: /\w+/,

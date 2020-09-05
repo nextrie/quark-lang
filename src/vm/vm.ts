@@ -83,10 +83,22 @@ export default class VirtualMachine {
     return 'values';
   }
 
-  private getInitialSymbolInValue(value: Value) {
-    if (!value) return value;
-    if (this.checkStackCategory(value.bound) === 'symbols') return this.stack.symbols[value.bound];
-    return this.getInitialSymbolInValue(this.stack.values[value.bound]);
+  private getArrayValue(array, ...indexes) {
+    // eslint-disable-next-line no-param-reassign
+    array = array[indexes[0]];
+    if (!this.stack.symbols[array]) return array;
+    // eslint-disable-next-line no-param-reassign
+    array = this.stack.symbols[array].values;
+    return this.getArrayValue(array, indexes.slice(1));
+  }
+
+  private getInitialSymbolInValue(value: Value, index: number = 0) {
+    if (!value) return value[index];
+    value.bound.map((bound: string) => {
+      if (this.checkStackCategory(bound) === 'symbols') return this.stack.symbols[bound][index];
+      return this.getInitialSymbolInValue(this.stack.values[bound], index);
+    });
+    return undefined;
   }
 
   public run(): void {
@@ -94,67 +106,12 @@ export default class VirtualMachine {
       this.expression = [];
       this.state = '';
       line.map((element: string) => {
-        if (this.findStateByBytecode(element)) {
-          if (this.state.startsWith('VARIABLE::')) {
-            this.state = `VARIABLE::${this.findStateByBytecode(element)}`;
-          } else this.state = this.findStateByBytecode(element);
-        } else if (this.state === 'PRINT') {
-          let bytes: Symbol;
-          if (!this.stack.values[element]) bytes = this.findSymbolByBytecode(element);
-          else if (this.checkStackCategory(this.stack.values[element]) === 'values') {
-            if (this.checkStackCategory(this.stack.values[element].bound) === 'values') {
-              bytes = this.getInitialSymbolInValue(this.stack.values[element]);
-            } else bytes = this.findSymbolByBytecode(this.stack.values[element].bound);
-          }
-          if (bytes) this.expression.push(this.bytecodesToValue(bytes));
-          else {
-            const boundBytes: Symbol = this.findSymbolByBytecode(this.stack.values[element].bound);
-            if (boundBytes) this.expression.push(this.bytecodesToValue(boundBytes));
-          }
-        } else if (this.state === 'TYPE') {
-          this.tmp = {
-            name: this.stack.values[element].name,
-            bytecode: element,
-          };
-          this.state = 'VARIABLE::DECLARATION';
-        } else if (this.state === 'VARIABLE::REFERENCE') {
-          this.stack.values[this.tmp.bytecode].bound = element;
-        } else if (this.state === 'VARIABLE::DECLARATION') {
-          if (this.checkStackCategory(element) === 'values') {
-            const identifier: string = this.getBytecodeIdentifier();
-            const symbol: Symbol = this.getInitialSymbolInValue(this.stack.values[element]);
-            this.stack.symbols[identifier] = {
-              value: symbol.value,
-              type: symbol.type,
-            };
-            this.stack.values[this.tmp.bytecode].bound = identifier;
-          } else this.stack.values[this.tmp.bytecode].bound = element;
-        } else if (this.state === 'VARIABLE::MODIFICATION') {
-          if (this.checkStackCategory(element) === 'symbols') {
-            const symbol: Symbol = this.findSymbolByBytecode(element);
-            this.symbols[this.stack.values[this.tmp.bytecode].bound].value = symbol.value;
-          } else {
-            this.stack.values[this.tmp.bytecode].bound = this.stack.values[element].bound;
-          }
-        } else if (this.stack.values[element]) {
-          this.state = 'VARIABLE::MODIFICATION';
-          this.tmp = {
-            name: this.stack.values[element].name,
-            bytecode: element,
-          };
+        if (this.findStateByBytecode(element)) this.state = this.findStateByBytecode(element);
+        else if (this.checkStackCategory(element) === 'values') {
+          // console.log(this.stack.values[element]);
         }
         return true;
       });
-      if (this.state === 'PRINT') {
-        this.expression = this.expression
-          .map((element: string) => {
-            if (!element.includes('\\n')) return element;
-            process.stdout.write('\n');
-            return undefined;
-          })
-          .filter((x: string | undefined) => x);
-        if (this.expression.length > 0) process.stdout.write(`${this.expression.join(' ')}\n`);
-      }
       return true;
     });
   }
