@@ -5,9 +5,11 @@
 
 import Tokenizer from 'core/tokenizer';
 import { Token } from 'interfaces/token';
-import Tokens from 'tokens'
+import Tokens from 'tokens';
+
 export default class Parser {
   private code: Array<string>;
+
   private tokens: Array<Array<Token>> = [];
 
   constructor(code: string) {
@@ -28,9 +30,10 @@ export default class Parser {
       tokens.map((item: Token): boolean => {
         const {
           token,
-          value
+          value,
         }: Token = item;
-        console.log(token);
+        if (!token) return true;
+        console.log(token, value);
         return true;
       });
       return true;

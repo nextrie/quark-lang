@@ -1,1 +1,11 @@
 print("test");
+
+String test = "bruh";
+
+print(test);
+
+if test === "bruh" {
+  print("test vaut bruh");
+} else {
+  print("nononononon")
+}

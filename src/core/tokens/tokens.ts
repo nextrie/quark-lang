@@ -8,6 +8,9 @@ export default {
   STRING: /".*?"/,
   NUMBER: /\d+/,
 
+  IF: /if/,
+  ELSE: /else/,
+
   TYPE: /(String|Number|Array<.*?>)/,
 
   ADD: /\+/,
@@ -21,6 +24,8 @@ export default {
   BRACKET_CL: /\]/,
   PAREN_OP: /\(/,
   PAREN_CL: /\)/,
+  CURV_OP: /{/,
+  CURV_CL: /}/,
   COMMA: /,/,
 
   EQUAL: /=/,
