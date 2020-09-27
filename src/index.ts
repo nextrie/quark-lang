@@ -3,10 +3,9 @@
                   Main
 ////////////////////////////////////// */
 
-import Compiler from 'core/compiler';
+import Parser from 'core/parser';
 import * as FS from 'fs';
-import VirtualMachine from 'vm/vm';
 
-const compiledOutput = new Compiler(FS.readFileSync('./sample/index.qrk', 'utf-8'));
-const vm = new VirtualMachine(compiledOutput.compile());
-vm.run();
+const parser: Parser = new Parser(FS.readFileSync('sample/index.qrk', 'utf-8'));
+
+parser.parse();

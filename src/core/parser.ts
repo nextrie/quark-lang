@@ -3,27 +3,37 @@
                  Parser
 //////////////////////////////////////*/
 
-import scanner from './scanner';
+import Tokenizer from 'core/tokenizer';
+import { Token } from 'interfaces/token';
+import Tokens from 'tokens'
+export default class Parser {
+  private code: Array<string>;
+  private tokens: Array<Array<Token>> = [];
 
-export default class Tokenizer {
-  public static tokens: Object = {};
-
-  public static customOut: Object = {};
-
-  public static ignore: Object = {};
-
-  public static functions: Object = {};
-
-  public static addTokenSet(tokenSet: Object) {
-    return Object.entries(tokenSet).map((x: Array<string>) => {
-      const property: string = x[0];
-      const value: string = x[1];
-      this.tokens[property] = value;
+  constructor(code: string) {
+    this.code = code
+      .split(/\r?\n/g)
+      .join('')
+      .split(/;/g)
+      .filter((x) => x.length > 0);
+    Tokenizer.addTokenSet(Tokens);
+    this.code.map((line: string): boolean => {
+      this.tokens.push(Tokenizer.tokenize(line));
       return true;
     });
   }
 
-  public static tokenize(string: string) {
-    return scanner(string, this);
+  public parse() {
+    this.tokens.map((tokens: Array<Token>): boolean => {
+      tokens.map((item: Token): boolean => {
+        const {
+          token,
+          value
+        }: Token = item;
+        console.log(token);
+        return true;
+      });
+      return true;
+    });
   }
 }
