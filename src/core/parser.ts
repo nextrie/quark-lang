@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /*//////////////////////////////////////
                Quark lang
                  Parser
@@ -58,10 +59,35 @@ export default class Parser {
     if (token.value === '(' && ast.type === Types.Keyword) {
       // eslint-disable-next-line no-param-reassign
       ast.type = Types.FunctionCall;
-    } else if (token.value === ')' && ast.type === Types.FunctionCall) {
-      this.any(tokens, index + 1, ast.parent);
+      ast.children.push({
+        type: Types.Any,
+        raw: '',
+        children: [],
+        parent: ast,
+      });
+      return this.any(tokens, index, ast.children.slice(-1)[0]);
     }
-    this.any(tokens, index + 1, ast);
+    if (token.value === ')' && ast.type === Types.FunctionCall) {
+      return this.any(tokens, index + 1, ast.parent);
+    }
+    return this.any(tokens, index + 1, ast);
+  }
+
+  private string(tokens: Token[], index: number, ast: Node) {
+    const token: Token = tokens[index];
+    ast.type = Types.String;
+    ast.raw = token.value;
+    this.any(tokens, index + 1, ast.parent);
+  }
+
+  private comma(tokens: Token[], index: number, ast: Node) {
+    ast.children.push({
+      type: Types.Any,
+      raw: '',
+      children: [],
+      parent: ast,
+    });
+    this.any(tokens, index + 1, ast.children.slice(-1)[0]);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -75,7 +101,12 @@ export default class Parser {
       case 'PAREN_OP': case 'PAREN_CL':
         this.bracket(tokens, index, ast);
         break;
-
+      case 'STRING':
+        this.string(tokens, index, ast);
+        break;
+      case 'COMMA':
+        this.comma(tokens, index, ast);
+        break;
       default:
         break;
     }
@@ -86,6 +117,10 @@ export default class Parser {
       this.program(tokens.filter((x: Token) => x.token), 0, this.ast);
       return true;
     });
-    console.log(this.ast);
+    function noCircular(key: string, value: string): undefined | string {
+      if (key === 'parent') return undefined;
+      return value;
+    }
+    console.log(JSON.stringify(this.ast, noCircular, 2));
   }
 }

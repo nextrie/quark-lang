@@ -5,4 +5,5 @@ export enum Types {
   Keyword = 'Keyword',
   FunctionCall = 'FunctionCall',
   FunctionDeclaration = 'FunctionDeclaration',
+  String = 'String',
 }

@@ -5,4 +5,5 @@ export interface Node {
   raw: string,
   children: Node[],
   parent?: Node,
+  params?: any,
 }
