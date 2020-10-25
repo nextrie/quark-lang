@@ -13,19 +13,24 @@ import { Types } from 'interfaces/types';
 export default class Parser {
   private code: Array<string>;
 
+  private currentTokenIndex: number = 0;
+
   private ast: Node = {
     type: Types.Program,
     raw: '',
     children: [],
   };
 
+  private goTo(type: Types, ast: Node) {
+    if (ast.type !== type) return this.goTo(type, ast.parent);
+    return ast;
+  }
+
   private tokens: Array<Array<Token>> = [];
 
   constructor(code: string) {
     this.code = code
       .split(/\r?\n/g)
-      .join('')
-      .split(/;/g)
       .filter((x) => x.length > 0);
     Tokenizer.addTokenSet(Tokens);
     this.code.map((line: string): boolean => {
@@ -51,6 +56,7 @@ export default class Parser {
       ast.type = Types.Keyword;
       ast.raw = tokens[index].value;
     } else if (ast.type === Types.Declaration) {
+      ast.params = {};
       ast.params.name = tokens[index].value;
     }
     this.any(tokens, index + 1, ast);
@@ -60,17 +66,18 @@ export default class Parser {
     const token: Token = tokens[index];
     if (token.value === '(' && ast.type === Types.Keyword) {
       ast.type = Types.FunctionCall;
-      ast.children.push({
+      ast.params = {};
+      ast.params.arguments = [];
+      ast.params.arguments.push({
         type: Types.Any,
         raw: '',
         children: [],
         parent: ast,
       });
-      return this.any(tokens, index, ast.children.slice(-1)[0]);
+      return this.any(tokens, index, ast.params.arguments.slice(-1)[0]);
     }
     if (token.value === '(' && ast.type === Types.Declaration) {
       ast.type = Types.FunctionDeclaration;
-      ast.params.return = ast.raw;
       ast.params.arguments = [];
       ast.params.arguments.push({
         type: Types.Any,
@@ -82,6 +89,14 @@ export default class Parser {
     }
     if (token.value === ')' && ast.type === Types.FunctionCall) {
       return this.any(tokens, index + 1, ast.parent);
+    }
+    if (token.value === '{') {
+      this.currentTokenIndex += 1;
+      return this.program(
+        this.tokens[this.currentTokenIndex],
+        0,
+        this.goTo(Types.FunctionDeclaration, ast),
+      );
     }
     return this.any(tokens, index + 1, ast);
   }
@@ -95,16 +110,7 @@ export default class Parser {
 
   private comma(tokens: Token[], index: number, ast: Node) {
     if (ast.type === Types.FunctionCall) {
-      ast.children.push({
-        type: Types.Any,
-        raw: '',
-        children: [],
-        parent: ast,
-      });
-      return this.any(tokens, index + 1, ast.children.slice(-1)[0]);
-    }
-    if (ast.type === Types.FunctionDeclaration) {
-      ast.parent.params.arguments.push({
+      ast.params.arguments.push({
         type: Types.Any,
         raw: '',
         children: [],
@@ -112,16 +118,28 @@ export default class Parser {
       });
       return this.any(tokens, index + 1, ast.params.arguments.slice(-1)[0]);
     }
+    if (ast.parent.type === Types.FunctionDeclaration) {
+      ast.parent.params.arguments.push({
+        type: Types.Any,
+        raw: '',
+        children: [],
+        parent: ast,
+      });
+      return this.any(tokens, index + 1, ast.parent.params.arguments.slice(-1)[0]);
+    }
     return null;
   }
 
   private type(tokens: Token[], index: number, ast: Node) {
-    const token: Token = tokens[index];
-    console.log(token);
     ast.type = Types.Declaration;
-    ast.raw = token.value;
-    ast.params = {};
-    this.any(tokens, index + 1, ast);
+    ast.raw = tokens[index].value;
+    return this.any(tokens, index + 1, ast);
+  }
+
+  private end(tokens: Token[], index: number, ast: Node) {
+    this.currentTokenIndex += 1;
+    if (!ast.parent) return this.program(this.tokens[this.currentTokenIndex], 0, ast);
+    return this.program(this.tokens[this.currentTokenIndex], 0, ast.parent);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -132,7 +150,7 @@ export default class Parser {
       case 'WORD':
         this.word(tokens, index, ast);
         break;
-      case 'PAREN_OP': case 'PAREN_CL':
+      case 'PAREN_OP': case 'PAREN_CL': case 'CURV_OP': case 'CURV_CL':
         this.bracket(tokens, index, ast);
         break;
       case 'STRING':
@@ -144,17 +162,17 @@ export default class Parser {
       case 'TYPE':
         this.type(tokens, index, ast);
         break;
+      case 'END':
+        this.end(tokens, index, ast);
+        break;
       default:
         break;
     }
   }
 
   public init() {
-    this.tokens.map((tokens: Array<Token>): boolean => {
-      console.log(tokens);
-      this.program(tokens.filter((x: Token) => x.token), 0, this.ast);
-      return true;
-    });
+    this.tokens = this.tokens.map((tokens: Token[]) => tokens.filter((x: Token) => x.token !== 'SPACE'));
+    this.program(this.tokens[this.currentTokenIndex].filter((x: Token) => x.token !== 'SPACE'), 0, this.ast);
     function noCircular(key: string, value: string): undefined | string {
       if (key === 'parent') return undefined;
       return value;
