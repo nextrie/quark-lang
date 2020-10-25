@@ -47,17 +47,18 @@ export default class Parser {
 
   // eslint-disable-next-line class-methods-use-this
   private word(tokens: Token[], index: number, ast: Node) {
-    // eslint-disable-next-line no-param-reassign
-    ast.type = Types.Keyword;
-    // eslint-disable-next-line no-param-reassign
-    ast.raw = tokens[index].value;
+    if (ast.type === Types.Any) {
+      ast.type = Types.Keyword;
+      ast.raw = tokens[index].value;
+    } else if (ast.type === Types.Declaration) {
+      ast.params.name = tokens[index].value;
+    }
     this.any(tokens, index + 1, ast);
   }
 
   private bracket(tokens: Token[], index: number, ast: Node) {
     const token: Token = tokens[index];
     if (token.value === '(' && ast.type === Types.Keyword) {
-      // eslint-disable-next-line no-param-reassign
       ast.type = Types.FunctionCall;
       ast.children.push({
         type: Types.Any,
@@ -66,6 +67,18 @@ export default class Parser {
         parent: ast,
       });
       return this.any(tokens, index, ast.children.slice(-1)[0]);
+    }
+    if (token.value === '(' && ast.type === Types.Declaration) {
+      ast.type = Types.FunctionDeclaration;
+      ast.params.return = ast.raw;
+      ast.params.arguments = [];
+      ast.params.arguments.push({
+        type: Types.Any,
+        raw: '',
+        children: [],
+        parent: ast,
+      });
+      return this.any(tokens, index, ast.params.arguments.slice(-1)[0]);
     }
     if (token.value === ')' && ast.type === Types.FunctionCall) {
       return this.any(tokens, index + 1, ast.parent);
@@ -81,13 +94,34 @@ export default class Parser {
   }
 
   private comma(tokens: Token[], index: number, ast: Node) {
-    ast.children.push({
-      type: Types.Any,
-      raw: '',
-      children: [],
-      parent: ast,
-    });
-    this.any(tokens, index + 1, ast.children.slice(-1)[0]);
+    if (ast.type === Types.FunctionCall) {
+      ast.children.push({
+        type: Types.Any,
+        raw: '',
+        children: [],
+        parent: ast,
+      });
+      return this.any(tokens, index + 1, ast.children.slice(-1)[0]);
+    }
+    if (ast.type === Types.FunctionDeclaration) {
+      ast.parent.params.arguments.push({
+        type: Types.Any,
+        raw: '',
+        children: [],
+        parent: ast,
+      });
+      return this.any(tokens, index + 1, ast.params.arguments.slice(-1)[0]);
+    }
+    return null;
+  }
+
+  private type(tokens: Token[], index: number, ast: Node) {
+    const token: Token = tokens[index];
+    console.log(token);
+    ast.type = Types.Declaration;
+    ast.raw = token.value;
+    ast.params = {};
+    this.any(tokens, index + 1, ast);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -107,6 +141,9 @@ export default class Parser {
       case 'COMMA':
         this.comma(tokens, index, ast);
         break;
+      case 'TYPE':
+        this.type(tokens, index, ast);
+        break;
       default:
         break;
     }
@@ -114,6 +151,7 @@ export default class Parser {
 
   public init() {
     this.tokens.map((tokens: Array<Token>): boolean => {
+      console.log(tokens);
       this.program(tokens.filter((x: Token) => x.token), 0, this.ast);
       return true;
     });

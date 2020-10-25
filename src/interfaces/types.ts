@@ -6,4 +6,6 @@ export enum Types {
   FunctionCall = 'FunctionCall',
   FunctionDeclaration = 'FunctionDeclaration',
   String = 'String',
+  VariableDeclaration = 'VariableDeclaration',
+  Declaration = 'Declaration',
 }

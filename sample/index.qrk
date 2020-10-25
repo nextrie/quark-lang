@@ -1,11 +1,7 @@
 print("test", "coucou");
 
-String test = "bruh";
-
-print(test);
-
-if test == "bruh" {
-  print("test vaut bruh");
-} else {
-  print("nononononon", "bruh");
+String test(String hello, String coucou) {
+  print(hello);
 }
+
+test("Ness");

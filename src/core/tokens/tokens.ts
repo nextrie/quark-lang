@@ -8,28 +8,15 @@ export default {
   STRING: /".*?"/,
   NUMBER: /\d+/,
 
-  IF: /if/,
-  ELSE: /else/,
+  TYPE: /(String|Number)/,
 
-  TYPE: /(String|Number|Array<.*?>)/,
-
-  ADD: /\+/,
-  MUL: /\*/,
-  DIV: /\\/,
-  MIN: /-/,
-
-  REFERENCE: /&/,
-
-  BRACKET_OP: /\[/,
-  BRACKET_CL: /\]/,
   PAREN_OP: /\(/,
   PAREN_CL: /\)/,
   CURV_OP: /{/,
   CURV_CL: /}/,
   COMMA: /,/,
 
-  EQUAL: /=/,
-
+  SPACE: /\s+/,
   END: /;/,
   WORD: /\w+/,
 };
