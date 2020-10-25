@@ -7,12 +7,13 @@ import Tokenizer from 'core/tokenizer';
 import { Token } from 'interfaces/token';
 import Tokens from 'tokens';
 import { Node } from 'interfaces/node';
+import { Types } from 'interfaces/types';
 
 export default class Parser {
   private code: Array<string>;
 
   private ast: Node = {
-    type: 'Program',
+    type: Types.Program,
     raw: '',
     children: [],
   };

@@ -1,5 +1,7 @@
+import { Types } from 'interfaces/types';
+
 export interface Node {
-  type: string,
+  type: Types,
   raw: string,
   children: Node[],
   parent?: Node,
