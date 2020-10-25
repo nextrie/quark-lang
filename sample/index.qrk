@@ -4,8 +4,8 @@ String test = "bruh";
 
 print(test);
 
-if test === "bruh" {
+if test == "bruh" {
   print("test vaut bruh");
 } else {
-  print("nononononon")
+  print("nononononon", "bruh");
 }

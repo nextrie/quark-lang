@@ -8,4 +8,4 @@ import * as FS from 'fs';
 
 const parser: Parser = new Parser(FS.readFileSync('sample/index.qrk', 'utf-8'));
 
-parser.parse();
+parser.init();
