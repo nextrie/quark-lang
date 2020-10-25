@@ -34,24 +34,56 @@ export default class Parser {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public parse(token: Token, nextTokens: Array<Token>, prevTokens: Array<Token>) {
-    if (Parser.prototype[token.token.toLowerCase()]) {
-      this.ast = Parser.prototype[token.token.toLowerCase()](token, nextTokens, prevTokens);
-      return this.ast;
+  private program(tokens: Token[], index: number, ast: Node) {
+    ast.children.push({
+      type: Types.Any,
+      raw: '',
+      children: [],
+      parent: ast,
+    });
+    this.any(tokens, index, ast.children.slice(-1)[0]);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private word(tokens: Token[], index: number, ast: Node) {
+    // eslint-disable-next-line no-param-reassign
+    ast.type = Types.Keyword;
+    // eslint-disable-next-line no-param-reassign
+    ast.raw = tokens[index].value;
+    this.any(tokens, index + 1, ast);
+  }
+
+  private bracket(tokens: Token[], index: number, ast: Node) {
+    const token: Token = tokens[index];
+    if (token.value === '(' && ast.type === Types.Keyword) {
+      // eslint-disable-next-line no-param-reassign
+      ast.type = Types.FunctionCall;
+    } else if (token.value === ')' && ast.type === Types.FunctionCall) {
+      this.any(tokens, index + 1, ast.parent);
     }
-    return null;
+    this.any(tokens, index + 1, ast);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private any(tokens: Token[], index: number, ast: Node) {
+    const token: Token = tokens[index];
+    if (!token) return;
+    switch (token.token) {
+      case 'WORD':
+        this.word(tokens, index, ast);
+        break;
+      case 'PAREN_OP': case 'PAREN_CL':
+        this.bracket(tokens, index, ast);
+        break;
+
+      default:
+        break;
+    }
   }
 
   public init() {
     this.tokens.map((tokens: Array<Token>): boolean => {
-      tokens.map((item: Token, index: number): boolean => {
-        const {
-          token,
-        }: Token = item;
-        if (!token) return true;
-        this.parse(item, tokens.slice(index + 1), tokens.slice(0, index));
-        return true;
-      });
+      this.program(tokens.filter((x: Token) => x.token), 0, this.ast);
       return true;
     });
     console.log(this.ast);
