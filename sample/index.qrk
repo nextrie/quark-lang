@@ -2,6 +2,10 @@ print("test", "coucou");
 
 String test(String hello, String coucou) {
   print(hello);
+  String bruh(String test) {
+    print("coucou");
+  }
+  bruh();
 }
 
 test("Ness");
