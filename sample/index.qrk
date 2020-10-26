@@ -8,6 +8,8 @@ String test(String hello, String coucou) {
   }
   String eheh(String message) {
     print("Hello world");
+    String eheh = "Bruh";
+    print(eheh);
   }
   bruh("test");
 }

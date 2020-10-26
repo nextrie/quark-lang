@@ -127,14 +127,19 @@ export default class Parser {
   }
 
   public end(tokens: Token[], index: number, ast: Node, token: Token) {
+    if (ast.parent.type === Types.VariableDeclaration) {
+      return this.program(
+        tokens,
+        index + 1,
+        this.goTo(Types.VariableDeclaration, ast).parent,
+        tokens[index + 1],
+      );
+    }
     return this.program(tokens, index + 1, ast.parent, tokens[index + 1]);
   }
 
   public declaration(tokens: Token[], index: number, ast: Node, token: Token) {
     ast.type = Types.VariableDeclaration;
-    ast.params = {
-      name: token.value,
-    };
     ast.children.push({
       type: Types.Any,
       raw: '',
