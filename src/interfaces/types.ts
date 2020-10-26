@@ -9,3 +9,5 @@ export enum Types {
   VariableDeclaration = 'VariableDeclaration',
   Declaration = 'Declaration',
 }
+
+export const Nodes = [Types.FunctionDeclaration];

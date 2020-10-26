@@ -1,11 +1,16 @@
 print("test", "coucou");
+print("tt", "cer");
 
 String test(String hello, String coucou) {
   print(hello);
-  String bruh(String test) {
-    print("coucou");
+  String bruh(String coucou) {
+    print(coucou);
   }
-  bruh();
+  String eheh(String message) {
+    print("Hello world");
+  }
+  bruh("test");
 }
 
 test("Ness");
+String username = "Ness";

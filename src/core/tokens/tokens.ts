@@ -9,6 +9,7 @@ export default {
   NUMBER: /\d+/,
 
   TYPE: /(String|Number)/,
+  DECLARATION: /=/,
 
   PAREN_OP: /\(/,
   PAREN_CL: /\)/,

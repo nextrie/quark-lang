@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-param-reassign */
 /*//////////////////////////////////////
                Quark lang
@@ -8,12 +10,10 @@ import Tokenizer from 'core/tokenizer';
 import { Token } from 'interfaces/token';
 import Tokens from 'tokens';
 import { Node } from 'interfaces/node';
-import { Types } from 'interfaces/types';
+import { Types, Nodes } from 'interfaces/types';
 
 export default class Parser {
-  private code: Array<string>;
-
-  private currentTokenIndex: number = 0;
+  private code: string;
 
   private ast: Node = {
     type: Types.Program,
@@ -27,42 +27,65 @@ export default class Parser {
     return ast;
   }
 
-  private tokens: Array<Array<Token>> = [];
+  private goToLastNode(ast: Node): Node {
+    if (!ast.parent) return ast;
+    if (Nodes.includes(ast.type)) return ast.parent;
+    return this.goToLastNode(ast.parent);
+  }
+
+  private tokens: Token[] = [];
 
   constructor(code: string) {
     this.code = code
       .split(/\r?\n/g)
-      .filter((x) => x.length > 0);
+      .filter((x) => x.length > 0)
+      .join('');
     Tokenizer.addTokenSet(Tokens);
-    this.code.map((line: string): boolean => {
-      this.tokens.push(Tokenizer.tokenize(line));
-      return true;
-    });
+    this.tokens = Tokenizer.tokenize(this.code);
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private program(tokens: Token[], index: number, ast: Node, token: Token) {
+  private program(tokens: Token[], index: number, ast: Node, token: Token): any {
     if (!tokens) return;
+    if (!ast) return;
     ast.children.push({
       type: Types.Any,
       raw: '',
       children: [],
       parent: ast,
     });
-    this.any(tokens, index, ast.children.slice(-1)[0]);
+    return this.any(tokens, index, ast.children.slice(-1)[0], token);
   }
 
   private word(tokens: Token[], index: number, ast: Node, token: Token) {
-    ast.type = Types.Keyword;
-    ast.raw = token.value;
-    return this.any(tokens, index + 1, ast);
+    if (ast.type !== Types.Declaration) {
+      ast.type = Types.Keyword;
+      ast.raw = token.value;
+    } else {
+      ast.params = {
+        name: token.value,
+      };
+    }
+    return this.any(tokens, index + 1, ast, tokens[index + 1]);
   }
 
   private bracket(tokens: Token[], index: number, ast: Node, token: Token) {
     if (token.value === '(') {
       if (ast.type === Types.Keyword) {
-        ast.params = {};
         ast.type = Types.FunctionCall;
+        ast.params = {
+          arguments: [],
+        };
+        ast.params.arguments.push({
+          type: Types.Any,
+          raw: '',
+          children: [],
+          parent: ast,
+        });
+        return this.any(tokens, index + 1, ast.params.arguments.slice(-1)[0], tokens[index + 1]);
+      }
+      if (ast.type === Types.Declaration) {
+        ast.type = Types.FunctionDeclaration;
         ast.params.arguments = [];
         ast.params.arguments.push({
           type: Types.Any,
@@ -70,51 +93,58 @@ export default class Parser {
           children: [],
           parent: ast,
         });
-        return this.any(tokens, index + 1, ast.params.arguments.slice(-1)[0]);
+        return this.any(tokens, index + 1, ast.params.arguments.slice(-1)[0], tokens[index + 1]);
       }
     } else if (token.value === ')') {
-      if (ast.parent.type === Types.FunctionCall) {
-        return this.any(tokens, index + 1, ast.parent);
-      }
+      return this.any(tokens, index + 1, ast.parent, tokens[index + 1]);
+    } else if (token.value === '{') {
+      return this.program(tokens, index + 1, ast, tokens[index + 1]);
+    } else if (token.value === '}') {
+      return this.program(tokens, index + 1, this.goToLastNode(ast), tokens[index + 1]);
     }
-    return null;
   }
 
   private string(tokens: Token[], index: number, ast: Node, token: Token) {
     ast.type = Types.String;
     ast.raw = token.value;
-    return this.any(tokens, index + 1, ast);
+    return this.any(tokens, index + 1, ast, tokens[index + 1]);
   }
 
   private comma(tokens: Token[], index: number, ast: Node, token: Token) {
-    if (ast.parent.type && ast.parent.type === Types.FunctionCall) {
-      ast.parent.params.arguments.push({
-        type: Types.Any,
-        raw: '',
-        children: [],
-        parent: ast.parent,
-      });
-      return this.any(tokens, index + 1, ast.parent.params.arguments.slice(-1)[0]);
-    }
-    return this.any(tokens, index + 1, ast);
+    ast.parent.params.arguments.push({
+      type: Types.Any,
+      raw: '',
+      children: [],
+      parent: ast.parent,
+    });
+    return this.any(tokens, index + 1, ast.parent.params.arguments.slice(-1)[0], tokens[index + 1]);
   }
 
-  private end(tokens: Token[], index: number, ast: Node, token: Token) {
-    this.currentTokenIndex += 1;
-    return this.program(
-      this.tokens[this.currentTokenIndex],
-      0,
-      ast.parent,
-      this.tokens[this.currentTokenIndex][0],
-    );
+  public type(tokens: Token[], index: number, ast: Node, token: Token) {
+    ast.type = Types.Declaration;
+    ast.raw = token.value;
+    return this.any(tokens, index + 1, ast, tokens[index + 1]);
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  public end(tokens: Token[], index: number, ast: Node, token: Token) {
+    return this.program(tokens, index + 1, ast.parent, tokens[index + 1]);
+  }
 
-  // eslint-disable-next-line class-methods-use-this
-  private any(tokens: Token[], index: number, ast: Node) {
-    if (!tokens) return;
-    const token: Token = tokens[index];
+  public declaration(tokens: Token[], index: number, ast: Node, token: Token) {
+    ast.type = Types.VariableDeclaration;
+    ast.params = {
+      name: token.value,
+    };
+    ast.children.push({
+      type: Types.Any,
+      raw: '',
+      children: [],
+      parent: ast,
+    });
+    return this.any(tokens, index + 1, ast.children.slice(-1)[0], tokens[index + 1]);
+  }
+
+  private any(tokens: Token[], index: number, ast: Node, token: Token) {
     if (!token) return;
     switch (token.token) {
       case 'WORD':
@@ -132,18 +162,24 @@ export default class Parser {
       case 'END':
         this.end(tokens, index, ast, token);
         break;
+      case 'TYPE':
+        this.type(tokens, index, ast, token);
+        break;
+      case 'DECLARATION':
+        this.declaration(tokens, index, ast, token);
+        break;
       default:
         break;
     }
   }
 
   public init() {
-    this.tokens = this.tokens.map((tokens: Token[]) => tokens.filter((x: Token) => x.token !== 'SPACE'));
+    this.tokens = this.tokens.filter((x: Token) => x.token !== 'SPACE');
     this.program(
-      this.tokens[this.currentTokenIndex],
+      this.tokens,
       0,
       this.ast,
-      this.tokens[this.currentTokenIndex][0],
+      this.tokens[0],
     );
     function noCircular(key: string, value: string): undefined | string {
       if (key === 'parent') return undefined;
