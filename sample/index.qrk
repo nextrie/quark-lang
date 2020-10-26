@@ -10,6 +10,9 @@ String test(String hello, String coucou) {
     print("Hello world");
     String eheh = "Bruh";
     print(eheh);
+    String test(String eheh) {
+      print("bruh");
+    }
   }
   bruh("test");
 }
