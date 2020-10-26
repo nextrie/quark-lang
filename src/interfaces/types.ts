@@ -8,6 +8,7 @@ export enum Types {
   String = 'String',
   VariableDeclaration = 'VariableDeclaration',
   Declaration = 'Declaration',
+  Number = 'Number',
 }
 
 export const Nodes = [Types.FunctionDeclaration];

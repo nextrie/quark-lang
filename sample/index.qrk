@@ -1,21 +1,5 @@
-print("test", "coucou");
-print("tt", "cer");
-
-String test(String hello, String coucou) {
-  print(hello);
-  String bruh(String coucou) {
-    print(coucou);
-  }
-  String eheh(String message) {
-    print("Hello world");
-    String eheh = "Bruh";
-    print(eheh);
-    String test(String eheh) {
-      print("bruh");
-    }
-  }
-  bruh("test");
+int factorial(int x) {
+  factorial(x);
 }
 
-test("Ness");
-String username = "Ness";
+print(factorial(5));

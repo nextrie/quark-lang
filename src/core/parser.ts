@@ -110,6 +110,12 @@ export default class Parser {
     return this.any(tokens, index + 1, ast, tokens[index + 1]);
   }
 
+  private number(tokens: Token[], index: number, ast: Node, token: Token) {
+    ast.type = Types.Number;
+    ast.raw = token.value;
+    return this.any(tokens, index + 1, ast, tokens[index + 1]);
+  }
+
   private comma(tokens: Token[], index: number, ast: Node, token: Token) {
     ast.parent.params.arguments.push({
       type: Types.Any,
@@ -172,6 +178,9 @@ export default class Parser {
         break;
       case 'DECLARATION':
         this.declaration(tokens, index, ast, token);
+        break;
+      case 'NUMBER':
+        this.number(tokens, index, ast, token);
         break;
       default:
         break;

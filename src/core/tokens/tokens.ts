@@ -8,7 +8,7 @@ export default {
   STRING: /".*?"/,
   NUMBER: /\d+/,
 
-  TYPE: /(String|Number)/,
+  TYPE: /(String|int)/,
   DECLARATION: /=/,
 
   PAREN_OP: /\(/,
