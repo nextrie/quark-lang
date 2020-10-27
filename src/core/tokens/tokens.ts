@@ -10,6 +10,7 @@ export default {
 
   TYPE: /(String|int)/,
   DECLARATION: /=/,
+  RETURN: /return/,
 
   PAREN_OP: /\(/,
   PAREN_CL: /\)/,

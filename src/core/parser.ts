@@ -111,6 +111,12 @@ export default class Parser {
     return this.any(tokens, index + 1, ast, tokens[index + 1]);
   }
 
+  private number(tokens: Token[], index: number, ast: Node, token: Token) {
+    ast.type = Types.Number;
+    ast.raw = token.value;
+    return this.any(tokens, index + 1, ast, tokens[index + 1]);
+  }
+
   private comma(tokens: Token[], index: number, ast: Node, token: Token) {
     ast.parent.params.arguments.push({
       type: Types.Any,
@@ -139,6 +145,29 @@ export default class Parser {
     return this.program(tokens, index + 1, ast.parent, tokens[index + 1]);
   }
 
+  public declaration(tokens: Token[], index: number, ast: Node, token: Token) {
+    ast.type = Types.VariableDeclaration;
+    ast.children.push({
+      type: Types.Any,
+      raw: '',
+      children: [],
+      parent: ast.parent,
+    });
+    return this.any(tokens, index + 1, ast.children.slice(-1)[0], tokens[index + 1]);
+  }
+
+  public return(tokens: Token[], index: number, ast: Node, token: Token) {
+    ast.type = Types.Return;
+    ast.raw = token.value;
+    ast.children.push({
+      type: Types.Any,
+      raw: '',
+      children: [],
+      parent: ast.parent,
+    });
+    return this.any(tokens, index + 1, ast.children.slice(-1)[0], tokens[index + 1]);
+  }
+
   private any(tokens: Token[], index: number, ast: Node, token: Token) {
     if (!token) return;
     switch (token.token) {
@@ -159,6 +188,15 @@ export default class Parser {
         break;
       case 'TYPE':
         this.type(tokens, index, ast, token);
+        break;
+      case 'RETURN':
+        this.return(tokens, index, ast, token);
+        break;
+      case 'NUMBER':
+        this.number(tokens, index, ast, token);
+        break;
+      case 'DECLARATION':
+        this.declaration(tokens, index, ast, token);
         break;
       default:
         break;

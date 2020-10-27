@@ -1,11 +1,9 @@
-print("test");
-
-String withParams(String user) {
-  print(user);
-  String test() {
-    print("coucou");
+int addition(int x) {
+  int closure(int y) {
+    return x;
   }
-  test();
+  return addition;
 }
 
-print(withParams("Ness"));
+int add = addition(5);
+print(add(5));
