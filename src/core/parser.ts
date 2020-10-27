@@ -10,7 +10,7 @@ import Tokenizer from 'core/tokenizer';
 import { Token } from 'interfaces/token';
 import Tokens from 'tokens';
 import { Node } from 'interfaces/node';
-import { Types, Nodes } from 'interfaces/types';
+import { Types, Nodes, Closures } from 'interfaces/types';
 
 export default class Parser {
   private code: string;
@@ -61,9 +61,11 @@ export default class Parser {
     if (ast.type !== Types.Declaration) {
       ast.type = Types.Keyword;
       ast.raw = token.value;
+      ast.params = {};
     } else {
       ast.params = {
         name: token.value,
+        type: ast.raw,
       };
     }
     return this.any(tokens, index + 1, ast, tokens[index + 1]);
@@ -73,26 +75,24 @@ export default class Parser {
     if (token.value === '(') {
       if (ast.type === Types.Keyword) {
         ast.type = Types.FunctionCall;
-        ast.params = {
-          arguments: [],
-        };
-        ast.params.arguments.push({
-          type: Types.Any,
-          raw: '',
-          children: [],
-          parent: ast,
-        });
+        ast.params.arguments = [
+          {
+            type: Types.Any,
+            raw: '',
+            parent: ast,
+          },
+        ];
         return this.any(tokens, index + 1, ast.params.arguments.slice(-1)[0], tokens[index + 1]);
       }
       if (ast.type === Types.Declaration) {
         ast.type = Types.FunctionDeclaration;
-        ast.params.arguments = [];
-        ast.params.arguments.push({
-          type: Types.Any,
-          raw: '',
-          children: [],
-          parent: ast,
-        });
+        ast.params.arguments = [
+          {
+            type: Types.Any,
+            raw: '',
+            parent: ast,
+          },
+        ];
         return this.any(tokens, index + 1, ast.params.arguments.slice(-1)[0], tokens[index + 1]);
       }
     } else if (token.value === ')') {
@@ -100,18 +100,13 @@ export default class Parser {
     } else if (token.value === '{') {
       return this.program(tokens, index + 1, ast, tokens[index + 1]);
     } else if (token.value === '}') {
-      return this.program(tokens, index + 1, this.goToLastNode(ast), tokens[index + 1]);
+      return this.program(tokens, index + 1, ast.parent.parent, tokens[index + 1]);
     }
+    return this.any(tokens, index + 1, ast, tokens[index + 1]);
   }
 
   private string(tokens: Token[], index: number, ast: Node, token: Token) {
     ast.type = Types.String;
-    ast.raw = token.value;
-    return this.any(tokens, index + 1, ast, tokens[index + 1]);
-  }
-
-  private number(tokens: Token[], index: number, ast: Node, token: Token) {
-    ast.type = Types.Number;
     ast.raw = token.value;
     return this.any(tokens, index + 1, ast, tokens[index + 1]);
   }
@@ -144,17 +139,6 @@ export default class Parser {
     return this.program(tokens, index + 1, ast.parent, tokens[index + 1]);
   }
 
-  public declaration(tokens: Token[], index: number, ast: Node, token: Token) {
-    ast.type = Types.VariableDeclaration;
-    ast.children.push({
-      type: Types.Any,
-      raw: '',
-      children: [],
-      parent: ast,
-    });
-    return this.any(tokens, index + 1, ast.children.slice(-1)[0], tokens[index + 1]);
-  }
-
   private any(tokens: Token[], index: number, ast: Node, token: Token) {
     if (!token) return;
     switch (token.token) {
@@ -175,12 +159,6 @@ export default class Parser {
         break;
       case 'TYPE':
         this.type(tokens, index, ast, token);
-        break;
-      case 'DECLARATION':
-        this.declaration(tokens, index, ast, token);
-        break;
-      case 'NUMBER':
-        this.number(tokens, index, ast, token);
         break;
       default:
         break;

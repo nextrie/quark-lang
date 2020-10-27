@@ -12,3 +12,5 @@ export enum Types {
 }
 
 export const Nodes = [Types.FunctionDeclaration];
+
+export const Closures = ['CURV_CL'];

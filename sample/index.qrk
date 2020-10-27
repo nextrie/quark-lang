@@ -1,5 +1,11 @@
-int factorial(int x) {
-  factorial(x);
+print("test");
+
+String withParams(String user) {
+  print(user);
+  String test() {
+    print("coucou");
+  }
+  test();
 }
 
-print(factorial(5));
+print(withParams("Ness"));
