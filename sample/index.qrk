@@ -1,9 +1,9 @@
-int addition(int x) {
-  int closure(int y) {
-    return x;
-  }
-  return addition;
-}
+int[][] test = [
+  5,
+  5,
+  [
+    5
+  ]
+];
 
-int add = addition(5);
-print(add(5));
+print(test[0]);

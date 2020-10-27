@@ -12,10 +12,7 @@ export default {
   DECLARATION: /=/,
   RETURN: /return/,
 
-  PAREN_OP: /\(/,
-  PAREN_CL: /\)/,
-  CURV_OP: /{/,
-  CURV_CL: /}/,
+  BRACKET: /(\(|\)|\{|\}|\[|\])/,
   COMMA: /,/,
 
   SPACE: /\s+/,

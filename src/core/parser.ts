@@ -62,6 +62,9 @@ export default class Parser {
       ast.type = Types.Keyword;
       ast.raw = token.value;
       ast.params = {};
+    } else if (ast.params && ast.params.type === 'Array') {
+      ast.type = Types.Keyword;
+      ast.raw = token.value;
     } else {
       ast.params = {
         name: token.value,
@@ -101,6 +104,35 @@ export default class Parser {
       return this.program(tokens, index + 1, ast, tokens[index + 1]);
     } else if (token.value === '}') {
       return this.program(tokens, index + 1, ast.parent.parent, tokens[index + 1]);
+    } else if (token.value === '[') {
+      if ([Types.Declaration].includes(ast.type)) {
+        if (!ast.params) ast.params = { depth: 0, type: Types.Array };
+        ast.params.depth += 1;
+        return this.any(tokens, index + 1, ast, tokens[index + 1]);
+      }
+      if ([Types.VariableDeclaration, Types.Array].includes(ast.parent.type)) {
+        ast.type = Types.Array;
+        ast.raw = token.value;
+        ast.children.push({
+          type: Types.Any,
+          raw: '',
+          children: [],
+          parent: ast,
+        });
+        return this.any(
+          tokens,
+          index + 1,
+          ast.children.slice(-1)[0],
+          tokens[index + 1],
+        );
+      }
+      if (!ast.params) ast.params = { depth: [] };
+      if (!ast.params.depth) ast.params.depth = [];
+      return this.any(tokens, index + 1, ast, tokens[index + 1]);
+    } else if (token.value === ']') {
+      if ([Types.VariableDeclaration, Types.Array].includes(ast.parent.type)) {
+        return this.any(tokens, index + 1, ast.parent, tokens[index + 1]);
+      }
     }
     return this.any(tokens, index + 1, ast, tokens[index + 1]);
   }
@@ -112,19 +144,43 @@ export default class Parser {
   }
 
   private number(tokens: Token[], index: number, ast: Node, token: Token) {
-    ast.type = Types.Number;
-    ast.raw = token.value;
+    if (ast.params && ast.params.depth) {
+      ast.params.depth.push(token.value);
+    } else {
+      ast.type = Types.Number;
+      ast.raw = token.value;
+    }
     return this.any(tokens, index + 1, ast, tokens[index + 1]);
   }
 
   private comma(tokens: Token[], index: number, ast: Node, token: Token) {
-    ast.parent.params.arguments.push({
+    const parameters: any | undefined = ast.parent.params;
+    if ((!parameters || parameters.type !== 'Array') && ast.parent.type !== Types.Array) {
+      ast.parent.params.arguments.push({
+        type: Types.Any,
+        raw: '',
+        children: [],
+        parent: ast.parent,
+      });
+      return this.any(
+        tokens,
+        index + 1,
+        ast.parent.params.arguments.slice(-1)[0],
+        tokens[index + 1],
+      );
+    }
+    ast.parent.children.push({
       type: Types.Any,
       raw: '',
       children: [],
       parent: ast.parent,
     });
-    return this.any(tokens, index + 1, ast.parent.params.arguments.slice(-1)[0], tokens[index + 1]);
+    return this.any(
+      tokens,
+      index + 1,
+      ast.parent.children.slice(-1)[0],
+      tokens[index + 1],
+    );
   }
 
   public type(tokens: Token[], index: number, ast: Node, token: Token) {
@@ -151,7 +207,7 @@ export default class Parser {
       type: Types.Any,
       raw: '',
       children: [],
-      parent: ast.parent,
+      parent: ast,
     });
     return this.any(tokens, index + 1, ast.children.slice(-1)[0], tokens[index + 1]);
   }
@@ -174,7 +230,7 @@ export default class Parser {
       case 'WORD':
         this.word(tokens, index, ast, token);
         break;
-      case 'PAREN_OP': case 'PAREN_CL': case 'CURV_OP': case 'CURV_CL':
+      case 'BRACKET':
         this.bracket(tokens, index, ast, token);
         break;
       case 'STRING':
