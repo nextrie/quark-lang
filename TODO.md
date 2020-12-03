@@ -11,12 +11,3 @@
     TODO
     <br> 
 </p>
-
-
-- Complete and customisable tokenizer.
-- Fast and optimized parser.
-- Simple compiler.
-- Simple bytecode.
-- Powerful Typescript virtual machine.
-- Selfcompiled language.
-- Syntactic sugar written in Quark.
