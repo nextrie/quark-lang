@@ -8,10 +8,10 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/NessMC/quark-lang.svg)](https://github.com/NessMC/quark-lang/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/NessMC/quark-lang.svg)](https://github.com/NessMC/quark-lang/pulls)
+[![GitHub Issues](https://img.shields.io/github/issues/thomasvergne/quark-lang.svg)](https://github.com/thomasvergne/quark-lang/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/thomasvergne/quark-lang.svg)](https://github.com/thomasvergne/quark-lang/pulls)
 [![License](https://img.shields.io/badge/license-Creative%20commons-blue.svg)](/LICENSE)
-[![BCH compliance](https://bettercodehub.com/edge/badge/NessMC/quark-lang?branch=master)](https://bettercodehub.com/)
+[![BCH compliance](https://bettercodehub.com/edge/badge/thomasvergne/quark-lang?branch=master)](https://bettercodehub.com/)
 [![Discord](https://discordapp.com/api/guilds/738827425043185717/widget.png?style=shield)](https://discord.gg/sXwE5Dp)
  
 </div>
@@ -19,7 +19,7 @@
 ---
 
 <p align="center"> 
-    Quark is a compiled programming language written in TypeScript.
+    Quark is a compiled programming language written in Rust.
     <br> 
 </p>
 
@@ -37,7 +37,7 @@
 ## 🧐 About <a name = "about"></a>
 
 The main goal of Quark is to offer a language that combines simplicity and
-productivity in addition to its cool syntax.
+productivity in addition to its cool and easy syntax.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
@@ -89,18 +89,14 @@ No usage informations for the moment.
 To deploy Quark lang, do:
 
 ```bash
- $ git clone git@github.com:NessMC/quark-lang.git
+ $ git clone git@github.com:thomasvergne/quark-lang.git
 
  # OR
 
  $ git init
- $ git remote add origin git@github.com:NessMC/quark-lang.git
+ $ git remote add origin git@github.com:thomasvergne/quark-lang.git
  $ git pull
 
- # OR
-
- $ docker pull nessmcfr/quark-lang
- $ docker run nessmcfr/quark-lang
 ```
 
 ## 🚀 Build <a name = "build"></a>
@@ -108,25 +104,21 @@ To deploy Quark lang, do:
 To build the project, do:
 
 ```bash
- $ npm run bundle 
+ $ cargo install --path .
+ $ quark-lang
  # That generate file called bundle.js, just run it with : node dist/bundle.js
 
  # OR
 
- $ docker-compose build
- # OR
- $ yarn docker:build
-
- $ docker run quark-lang_app
- # OR
- $ yarn docker:start
+ $ docker build -t quark-lang .
+ $ docker run -it --rm quark-lang
 
 ```
 
 ## ✍️ Authors <a name = "authors"></a>
 
--   [@NessMC](https://github.com/NessMC) - Idea & Initial work
+-   [@thomasvergne](https://github.com/thomasvergne) - Idea & Initial work
 
 See also the list of
-[contributors](https://github.com/NessMC/quark-lang/contributors) who
+[contributors](https://github.com/thomasvergne/quark-lang/contributors) who
 participated in this project.
