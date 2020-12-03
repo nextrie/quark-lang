@@ -31,10 +31,10 @@ appreciation, which we would also be very happy about:
 ## I Have a Question
 
 > If you want to ask a question, we assume that you have read the available
-> [Documentation](https://github.com/NessMC/quark-lang/README.md).
+> [Documentation](https://github.com/thomasvergne/quark-lang/README.md).
 
 Before you ask a question, it is best to search for existing
-[Issues](https://github.com/NessMC/quark-lang/issues) that might help you. In
+[Issues](https://github.com/thomasvergne/quark-lang/issues) that might help you. In
 case you have found a suitable issue and still need clarification, you can write
 your question in this issue. It is also advisable to search the internet for
 answers first.
@@ -42,7 +42,7 @@ answers first.
 If you then still feel the need to ask a question and need clarification, we
 recommend the following:
 
--   Open an [Issue](https://github.com/NessMC/quark-lang/issues/new).
+-   Open an [Issue](https://github.com/thomasvergne/quark-lang/issues/new).
 -   Provide as much context as you can about what you're running into.
 -   Provide project and platform versions (nodejs, npm, etc), depending on what
     seems relevant.
@@ -69,13 +69,13 @@ steps in advance to help us fix any potential bug as fast as possible.
 -   Make sure that you are using the latest version.
 -   Determine if your bug is really a bug and not an error on your side e.g.
     using incompatible environment components/versions (Make sure that you have
-    read the [documentation](https://github.com/NessMC/quark-lang/README.md). If
+    read the [documentation](https://github.com/thomasvergne/quark-lang/README.md). If
     you are looking for support, you might want to check
     [this section](#i-have-a-question)).
 -   To see if other users have experienced (and potentially already solved) the
     same issue you are having, check if there is not already a bug report
     existing for your bug or error in the
-    [bug tracker](https://github.com/NessMC/quark-lang/issues?q=label%3Abug).
+    [bug tracker](https://github.com/thomasvergne/quark-lang/issues?q=label%3Abug).
 -   Also make sure to search the internet (including Stack Overflow) to see if
     users outside of the GitHub community have discussed the issue.
 -   Collect information about the bug:
@@ -91,12 +91,12 @@ steps in advance to help us fix any potential bug as fast as possible.
 
 > You must never report security related issues, vulnerabilities or bugs to the
 > issue tracker, or elsewhere in public. Instead sensitive bugs must be sent by
-> email to contact@nessmc.fr
+> email to thomas@quark-lang.dev
 
 We use GitHub issues to track bugs and errors. If you run into an issue with the
 project:
 
--   Open an [Issue](https://github.com/NessMC/quark-lang/issues/new). (Since we
+-   Open an [Issue](https://github.com/thomasvergne/quark-lang/issues/new). (Since we
     can't be sure at this point whether it is a bug or not, we ask you not to
     talk about a bug yet and not to label the issue.)
 -   Explain the behavior you would expect and the actual behavior.
@@ -121,7 +121,7 @@ Once it's filed:
 ### Suggesting Enhancements
 
 In order to suggest an improvement, you must create a new
-[Issue](https://github.com/NessMC/quark-lang/issues/new).
+[Issue](https://github.com/thomasvergne/quark-lang/issues/new).
 
 #### Before Submitting an Enhancement
 
@@ -143,7 +143,7 @@ Commits are simple enough to write, you have to make sure:
 
 ## Join The Project Team
 
-To join the project team, please apply at this address: contact@nessmc.fr.
+To join the project team, please apply at this address: thomas@quark-lang.dev
 
 Please make sure to highlight your application. Use this title : [APPLY]
 <github username>
