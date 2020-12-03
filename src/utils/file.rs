@@ -1,5 +1,6 @@
 use std::fs;
 use std::io::Error;
+use crate::utils::string;
 
 // Structure containing file informations.
 pub struct File {
@@ -12,7 +13,7 @@ impl File {
     // Trying reading the file.
     let response: Result<&'static str, Error> = || -> Result<&'static str, Error> {
       let content = fs::read_to_string(&self.path)?;
-      Ok(Box::leak(content.into_boxed_str()))
+      Ok(string::string_to_static(content))
     }();
     // Returning the response (content or error)
     response
