@@ -7,4 +7,14 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
+[package.metadata.commands]
+# Initisialising related scripts
+"init" = "cargo install cargo-cmd cargo-watch"
+
+# Execution related scripts
+"start" = "cargo run"
+"start:watch" = "cargo watch -x run"
+
+# Docker related scripts
+"docker:build" = "docker build -t quark-lang ."
+"docker:start" = "docker run -it --rm quark-lang"
