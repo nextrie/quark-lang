@@ -1,0 +1,11 @@
+# Quark-lang's editor configuration
+root = true
+charset = utf-8
+
+# Tabs
+indent_size = 2
+indent_style = space
+
+# Lines misc
+insert_final_newline = true
+trim_trailing_whitespace = true
