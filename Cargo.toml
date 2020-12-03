@@ -16,5 +16,6 @@ edition = "2018"
 "start:watch" = "cargo watch -x run"
 
 # Docker related scripts
+"docker" = "cargo cmd docker:build && cargo cmd docker:start"
 "docker:build" = "docker build -t quark-lang ."
 "docker:start" = "docker run -it --rm quark-lang"

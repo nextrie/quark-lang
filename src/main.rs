@@ -8,7 +8,7 @@ fn main() {
   };
   let content: Result<&str, Error> = file.read();
   if content.is_err() {
-    println!("test");
+    return println!("test");
   }
   println!("{}", content.unwrap());
 }
