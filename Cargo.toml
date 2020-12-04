@@ -19,3 +19,6 @@ edition = "2018"
 "docker" = "cargo cmd docker:build && cargo cmd docker:start"
 "docker:build" = "docker build -t quark-lang ."
 "docker:start" = "docker run -it --rm quark-lang"
+
+[dependencies]
+regex = "1"
