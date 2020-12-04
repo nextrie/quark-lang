@@ -1,14 +1,18 @@
 mod utils;
-use std::io::Error;
-use utils::file::*;
+use regex::{Regex, Split};
+use std::fs;
 
 fn main() {
-  let file: File = File {
-    path: "sample/index.qrk"
-  };
-  let content: Result<&str, Error> = file.read();
-  if content.is_err() {
-    return println!("test");
+  let file = fs::read_to_string("sample/index.qrk");
+  if file.is_err() {
+    return println!("An error occured during file reading...");
   }
-  println!("{}", content.unwrap());
+  let re: Regex = Regex::new(r"\r?\n").unwrap();
+  println!("{:?}", regex_to_array(re.split(&file.unwrap())));
 }
+
+fn regex_to_array(re: Split) -> Vec<&'static str> {
+  let mut result: Vec<&'static str> = vec![];
+  for el in re  { result.push(Box::leak(String::from(el).into_boxed_str())) }
+  result
+} 
