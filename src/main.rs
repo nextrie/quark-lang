@@ -8,7 +8,8 @@ fn main() {
     return println!("An error occured during file reading...");
   }
   let re: Regex = Regex::new(r"\r?\n").unwrap();
-  println!("{:?}", regex_to_array(re.split(&file.unwrap())));
+  let content: Vec<&str> = regex_to_array(re.split(&file.unwrap()));
+  println!("{:?}", content);
 }
 
 fn regex_to_array(re: Split) -> Vec<&'static str> {
