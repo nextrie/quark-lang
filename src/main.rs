@@ -3,8 +3,7 @@ mod core;
 use regex::Regex;
 use std::fs;
 use crate::core::lexer::Lexer;
-use crate::utils::string::{string_to_static};
-use crate::utils::regex::regex_to_array;
+use utils::{string::string_to_static, regex::regex_to_array};
 
 fn main() {
 
