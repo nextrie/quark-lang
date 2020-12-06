@@ -3,7 +3,7 @@ mod core;
 use regex::{Regex, Split};
 use std::fs;
 use crate::core::lexer::Lexer;
-use crate::utils::string::string_to_static;
+use crate::utils::string::{string_to_static, str_to_static};
 
 fn main() {
 
@@ -21,7 +21,7 @@ fn main() {
 
 fn regex_to_array(re: Split) -> Vec<&'static str> {
   let mut result: Vec<&'static str> = vec![];
-  for el in re  { result.push(string_to_static(String::from(el))) }
+  for el in re  { result.push(str_to_static(el)) }
   result
 } 
 
