@@ -1,9 +1,10 @@
 mod utils;
 mod core;
-use regex::{Regex, Split};
+use regex::Regex;
 use std::fs;
 use crate::core::lexer::Lexer;
-use crate::utils::string::{string_to_static, str_to_static};
+use crate::utils::string::{string_to_static};
+use crate::utils::regex::regex_to_array;
 
 fn main() {
 
@@ -18,12 +19,6 @@ fn main() {
   let lexer = Lexer::new(string_to_static(code));
   lexer.lexer();
 }
-
-fn regex_to_array(re: Split) -> Vec<&'static str> {
-  let mut result: Vec<&'static str> = vec![];
-  for el in re  { result.push(str_to_static(el)) }
-  result
-} 
 
 fn format_code(code: &mut Vec<&str>) {
   for el in code { *el = el.trim(); }
