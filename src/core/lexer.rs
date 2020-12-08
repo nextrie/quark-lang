@@ -53,3 +53,15 @@ impl Lexer {
     tokens
   }
 }
+
+impl Display for Token {
+  fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
+    write!(f, "{{ token: ");
+    match self.token {
+      Tokens::Node => { write!(f, "Node"); }
+      Tokens::String => { write!(f, "String"); }
+    }
+    write!(f, ", value: \"{}\" }}", self.value);
+    Ok(())
+  }
+}
