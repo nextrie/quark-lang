@@ -1,5 +1,5 @@
 use crate::string_to_static;
-use std::fmt::{Display, Formatter};
+use std::fmt::{Display, Formatter, Error};
 
 pub struct Lexer {
   code: &'static str
@@ -55,13 +55,13 @@ impl Lexer {
 }
 
 impl Display for Token {
-  fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
-    write!(f, "{{ token: ");
+  fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+    write!(f, "{{ token: ").unwrap();
     match self.token {
-      Tokens::Node => { write!(f, "Node"); }
-      Tokens::String => { write!(f, "String"); }
-    }
-    write!(f, ", value: \"{}\" }}", self.value);
+      Tokens::Node => write!(f, "Node").unwrap(),
+      Tokens::String => write!(f, "String").unwrap()
+    };
+    write!(f, ", value: \"{}\" }}", self.value).unwrap();
     Ok(())
   }
 }
