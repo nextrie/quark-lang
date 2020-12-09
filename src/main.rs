@@ -2,7 +2,7 @@ mod utils;
 mod core;
 use regex::Regex;
 use std::fs;
-use crate::core::lexer::{Lexer, Token};
+use crate::core::{lexer::{Lexer, Token}, parser};
 use utils::{string::string_to_static, regex::regex_to_array};
 
 fn main() {
@@ -20,6 +20,7 @@ fn main() {
   for token in lexed {
     println!("{}", token);
   }
+
 }
 
 fn format_code(code: &mut Vec<&str>) {
