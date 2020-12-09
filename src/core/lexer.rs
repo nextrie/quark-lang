@@ -5,7 +5,7 @@ pub struct Lexer {
   code: &'static str
 }
 
-enum Tokens {
+pub(crate) enum Tokens {
   Node,
   //Keyword,
   String,
