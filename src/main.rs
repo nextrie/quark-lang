@@ -2,7 +2,7 @@ mod utils;
 mod core;
 use regex::Regex;
 use std::fs;
-use crate::core::{lexer::{Lexer, Token}, parser};
+use crate::core::{lexer::{Lexer, Token}, parser::Parser};
 use utils::{string::string_to_static, regex::regex_to_array};
 
 fn main() {
@@ -17,9 +17,8 @@ fn main() {
 
   let lexer = Lexer::new(string_to_static(code));
   let lexed: Vec<Token> = lexer.lexer();
-  for token in lexed {
-    println!("{}", token);
-  }
+  lexed.parse();
+
 
 }
 
