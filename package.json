@@ -13,7 +13,7 @@
     "programming"
   ],
   "scripts": {
-    "start": "deno run --unstable -c tsconfig.json --watch src/main.ts"
+    "start": "deno run --unstable --allow-all -c tsconfig.json --watch src/main.ts"
   },
   "author": "thomasvergne",
   "license": "CC0-1.0",
