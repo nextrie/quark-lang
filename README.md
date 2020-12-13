@@ -19,7 +19,7 @@
 ---
 
 <p align="center"> 
-    Quark is a compiled programming language written in Rust.
+    Quark is a compiled programming language written in Typescript.
     <br> 
 </p>
 
@@ -51,8 +51,7 @@ system.
 To install Quark, you will need:
 
 ```
-Node.JS > 13
-NPM > 6
+Deno >= 1.6.0
 ```
 
 ### Installing
@@ -64,7 +63,7 @@ NPM > 6
 To run the tests:
 
 ```
- npm run test
+ deno test
 ```
 
 ### Break down into end to end tests
@@ -77,7 +76,7 @@ The linter is present in order to allow anyone to be able to contribute while
 being in the main coherence of the code.
 
 ```
- npm run lint
+ deno lint
 ```
 
 ## 🎈 Usage <a name="usage"></a>
@@ -104,9 +103,8 @@ To deploy Quark lang, do:
 To build the project, do:
 
 ```bash
- $ cargo install --path .
+ $ deno compile
  $ quark-lang
- # That generate file called bundle.js, just run it with : node dist/bundle.js
 
  # OR
 
