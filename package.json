@@ -1,0 +1,21 @@
+{
+  "name": "quark-lang",
+  "version": "1.0.0",
+  "description": "Quark is a compiled programming language written in Typescript. Its syntax is based on Lisp.",
+  "main": "src/main.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomasvergne/quark-lang.git"
+  },
+  "keywords": [
+    "quark",
+    "language",
+    "programming"
+  ],
+  "author": "thomasvergne",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/thomasvergne/quark-lang/issues"
+  },
+  "homepage": "https://github.com/thomasvergne/quark-lang#readme"
+}
