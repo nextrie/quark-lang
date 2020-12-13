@@ -3,9 +3,6 @@
 scripts
 dist
 
-# Cargo related
-/target
-
 # IDE related
 .vscode
 .idea
