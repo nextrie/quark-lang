@@ -103,7 +103,8 @@ To deploy Quark lang, do:
 To build the project, do:
 
 ```bash
- $ deno compile src/main.ts
+ $ cd src
+ $ deno compile --unstable main.ts -o quark-lang
  $ quark-lang
 
  # OR
