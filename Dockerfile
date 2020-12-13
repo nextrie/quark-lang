@@ -1,17 +1,20 @@
-FROM rust:1.40-alpine3.11 as builder
-WORKDIR /usr/src/quark-lang
+FROM hayd/deno:1.5.2 as builder
+WORKDIR /app
 
-# Copying folder to container
-COPY . .
+# Prefer not to run as root.
+USER deno
 
-# Installing Quark in bin
-RUN cargo install --path .
+# Cache the dependencies as a layer (this is re-run only when deps.ts is modified).
+# Ideally this will download and compile _all_ external files used in main.ts.
 
-FROM alpine:3.11
+# These steps will be re-run upon each file change in your working directory:
+ADD . /app
+# Compile the main app so that it doesn't need to be compiled each startup/entry.
+RUN deno cache src/main.ts
+RUN cd src
+RUN deno compile --unstable main.ts -o quark-lang
+# These are passed as deno arguments when run with docker:
 
-# Copying sample folder from builder
-COPY --from=builder /usr/src/quark-lang/sample/ ./sample/
-
-# Copying quark executable to bin from builder
-COPY --from=builder /usr/local/cargo/bin/quark-lang /usr/local/bin/quark-lang
-CMD ["quark-lang"]
+FROM alpine:3.7
+COPY --from=builder /app/src/quark-lang ./quark-lang
+CMD ["./quark-lang"]
