@@ -11,8 +11,7 @@ USER deno
 ADD . /app
 # Compile the main app so that it doesn't need to be compiled each startup/entry.
 RUN deno cache src/main.ts
-RUN cd src
-RUN deno compile --unstable main.ts -o quark-lang
+RUN deno compile --unstable src/main.ts -o quark-lang
 # These are passed as deno arguments when run with docker:
 
 FROM alpine:3.7
