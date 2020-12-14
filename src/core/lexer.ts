@@ -6,6 +6,7 @@ export enum Tokens {
   Number = 'Number',
 }
 
+// Token Node type
 export type Node = '(' | ')' | '{' | '}';
 
 // Token interface
