@@ -35,7 +35,7 @@ export class Lexer {
         // Checking if tmp isn't empty and adding it to tokens
         if (tmp.length > 0) {
           state = '';
-          container.push({ token: Tokens.Word, value: tmp.join('') });
+          container.push({ token: Tokens.Word, value: tmp.join('').trim() });
           tmp.splice(0, tmp.length);
         }
         // Pushing node token to tokens
@@ -46,7 +46,7 @@ export class Lexer {
         // Checking if it's string end and pushing it to tokens
         if (state === 'STRING') {
           state = '';
-          container.push({ token: Tokens.String, value: tmp.join('') });
+          container.push({ token: Tokens.String, value: tmp.join('').trim() });
           tmp.splice(0, tmp.length);
         } else {
           // Setting state to string
@@ -68,6 +68,11 @@ export class Lexer {
       }
     }
     // Returning tokens list
-    return container;
+    return container.map((token: Token) => {
+      if ([Tokens.Word, Tokens.String].includes(token.token) && !isNaN(Number(token.value))) {
+        token.token = Tokens.Number;
+      }
+      return token;
+    });
   }
 }
