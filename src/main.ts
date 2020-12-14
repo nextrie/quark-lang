@@ -7,4 +7,4 @@ async function main(): Promise<void> {
   console.log((new Lexer(script)).lexer());
 }
 
-await main()
+await main();
