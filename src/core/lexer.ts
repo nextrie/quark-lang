@@ -6,10 +6,12 @@ export enum Tokens {
   Number = 'Number',
 }
 
+export type Node = '(' | ')' | '{' | '}';
+
 // Token interface
 export interface Token {
   token: Tokens,
-  value: string,
+  value: Node | number | string,
 }
 
 export class Lexer {
@@ -39,7 +41,7 @@ export class Lexer {
           tmp.splice(0, tmp.length);
         }
         // Pushing node token to tokens
-        container.push({ token: Tokens.Node, value: char, });
+        container.push({ token: Tokens.Node, value: char as Node, });
       } else if (char === '"') {
         // Pushing quote char to tmp
         tmp.push(char);
@@ -71,6 +73,7 @@ export class Lexer {
     return container.map((token: Token) => {
       if ([Tokens.Word, Tokens.String].includes(token.token) && !isNaN(Number(token.value))) {
         token.token = Tokens.Number;
+        token.value = Number(token.value);
       }
       return token;
     });
