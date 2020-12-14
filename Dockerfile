@@ -15,5 +15,7 @@ RUN deno compile --unstable src/main.ts -o quark-lang
 # These are passed as deno arguments when run with docker:
 
 FROM alpine:3.7
+# Copy quark lang executable from builder to current folder
 COPY --from=builder /app/src/quark-lang ./quark-lang
+# Execute quark lang executable
 CMD ["./quark-lang"]
