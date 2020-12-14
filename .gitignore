@@ -8,5 +8,4 @@ dist
 .idea
 
 # Build
-**/quark-lang
-**/dr
+build
