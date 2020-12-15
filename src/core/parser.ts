@@ -74,7 +74,7 @@ export class Parser {
   }
 
   private word(index: number, ast: Node): Node {
-    const { token, value }: Token = this.tokens[index];
+    const { value }: Token = this.tokens[index];
     if (!ast.params.name) ast.params.name = String(value);
     else ast.children.push({
       type: Types.Keyword,
@@ -88,7 +88,7 @@ export class Parser {
 
   public parse(index: number = 0, ast: Node = this.ast): Node {
     if (this.tokens.length === index) return ast;
-    const { token, value }: Token = this.tokens[index];
+    const { token }: Token = this.tokens[index];
     switch(token) {
       case Tokens.Node:
         return this.node(index, ast);
