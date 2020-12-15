@@ -5,3 +5,11 @@ export enum Types {
   Number = 'Number',
   String = 'String',
 }
+
+// Node interface
+export interface Node {
+  type: Types,
+  raw: string,
+  children: Node[],
+  parent?: Node,
+}
