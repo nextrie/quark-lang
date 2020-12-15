@@ -50,7 +50,7 @@ export class Parser {
   }
 
   private string(index: number, ast: Node): Node {
-    const { token, value }: Token = this.tokens[index];
+    const { value }: Token = this.tokens[index];
     ast.children.push({
       type: Types.String,
       raw: value,
@@ -70,6 +70,13 @@ export class Parser {
   private word(index: number, ast: Node): Node {
     const { token, value }: Token = this.tokens[index];
     if (!ast.params.name) ast.params.name = String(value);
+    else ast.children.push({
+      type: Types.Keyword,
+      raw: value,
+      params: {},
+      children: [],
+      parent: ast,
+    });
     return this.parse(index + 1, ast);
   }
 
