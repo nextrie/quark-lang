@@ -12,7 +12,7 @@ export enum Types {
 // Node interface
 export interface Node {
   type: Types,
-  raw?: string,
+  raw?: string | number,
   children: Node[],
   parent?: Node,
 }
@@ -28,9 +28,14 @@ export class Parser {
   }
 
   private node(index: number, ast: Node): Node {
-    const token: Token = this.tokens[index];
-    console.log(token);
-    return this.any(index + 1, ast);
+    const { value }: Token = this.tokens[index];
+    ast.children.push({
+      type: Types.Node,
+      raw: value,
+      children: [],
+      parent: ast,
+    });
+    return this.any(index + 1, ast.children.slice(-1)[0]);
   }
 
   private string(index: number, ast: Node): Node {
@@ -56,7 +61,7 @@ export class Parser {
     const { token, value }: Token = this.tokens[index];
     switch(token) {
       case Tokens.Node:
-        return this.word(index, ast);
+        return this.node(index, ast);
       case Tokens.String:
         return this.string(index, ast);
       case Tokens.Number:
