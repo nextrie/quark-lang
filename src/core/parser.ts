@@ -26,6 +26,7 @@ export class Parser {
   private readonly ast: Node = {
     type: Types.Program,
     children: [],
+    params: {},
   };
   private readonly tokens: Token[];
   constructor(content: string) {
@@ -34,18 +35,29 @@ export class Parser {
 
   private node(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
-    ast.children.push({
-      type: Types.Node,
-      raw: value,
-      children: [],
-      parent: ast,
-    });
+    if (['(', '{'].includes(String(value))) {
+      ast.children.push({
+        type: Types.Node,
+        raw: value,
+        params: {},
+        children: [],
+        parent: ast,
+      });
+    } else if ([')', '}'].includes(String(value))) {
+      return this.parse(index + 1, ast.parent);
+    }
     return this.parse(index + 1, ast.children.slice(-1)[0]);
   }
 
   private string(index: number, ast: Node): Node {
     const { token, value }: Token = this.tokens[index];
-    console.log(token);
+    ast.children.push({
+      type: Types.String,
+      raw: value,
+      params: {},
+      children: [],
+      parent: ast,
+    })
     return this.parse(index + 1, ast);
   }
 
@@ -57,7 +69,7 @@ export class Parser {
 
   private word(index: number, ast: Node): Node {
     const { token, value }: Token = this.tokens[index];
-    console.log(ast);
+    if (!ast.params.name) ast.params.name = String(value);
     return this.parse(index + 1, ast);
   }
 
