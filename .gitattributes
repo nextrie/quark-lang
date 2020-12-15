@@ -1,0 +1,3 @@
+# Git attributes
+
+*.qrk lisp # Lisp syntax highlighting for Quark files
