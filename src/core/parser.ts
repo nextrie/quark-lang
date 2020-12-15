@@ -62,8 +62,14 @@ export class Parser {
   }
 
   private number(index: number, ast: Node): Node {
-    const { token, value }: Token = this.tokens[index];
-    console.log(token);
+    const { value }: Token = this.tokens[index];
+    ast.children.push({
+      type: Types.Number,
+      raw: value,
+      params: {},
+      children: [],
+      parent: ast,
+    });
     return this.parse(index + 1, ast);
   }
 
