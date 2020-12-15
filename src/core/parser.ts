@@ -35,28 +35,28 @@ export class Parser {
       children: [],
       parent: ast,
     });
-    return this.any(index + 1, ast.children.slice(-1)[0]);
+    return this.parse(index + 1, ast.children.slice(-1)[0]);
   }
 
   private string(index: number, ast: Node): Node {
-    const token: Token = this.tokens[index];
+    const { token, value }: Token = this.tokens[index];
     console.log(token);
-    return this.any(index + 1, ast);
+    return this.parse(index + 1, ast);
   }
 
   private number(index: number, ast: Node): Node {
-    const token: Token = this.tokens[index];
+    const { token, value }: Token = this.tokens[index];
     console.log(token);
-    return this.any(index + 1, ast);
+    return this.parse(index + 1, ast);
   }
 
   private word(index: number, ast: Node): Node {
-    const token: Token = this.tokens[index];
-    console.log(token);
-    return this.any(index + 1, ast);
+    const { token, value }: Token = this.tokens[index];
+    console.log(ast);
+    return this.parse(index + 1, ast);
   }
 
-  private any(index: number = 0, ast: Node = this.ast): Node {
+  public parse(index: number = 0, ast: Node = this.ast): Node {
     if (this.tokens.length === index) return ast;
     const { token, value }: Token = this.tokens[index];
     switch(token) {
@@ -69,10 +69,6 @@ export class Parser {
       case Tokens.Word:
         return this.word(index, ast);
     }
-    return this.any(index + 1, ast);
-  }
-
-  public parse() {
-    this.any();
+    return this.parse(index + 1, ast);
   }
 }
