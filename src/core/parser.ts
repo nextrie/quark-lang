@@ -26,4 +26,14 @@ export class Parser {
   constructor(content: string) {
     this.tokens = new Lexer(content).lexer();
   }
+
+  private any(tokens: Token[], index: number = 0, ast: Node = this.ast): Node {
+    if (tokens.length === index) return ast;
+    const token: Token = tokens[index];
+    console.log(token);
+    return this.any(tokens, index + 1, ast);
+  }
+  public parse() {
+    this.any(this.tokens);
+  }
 }
