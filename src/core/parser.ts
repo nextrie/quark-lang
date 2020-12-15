@@ -9,10 +9,15 @@ export enum Types {
   String = 'String',
 }
 
+export interface Parameter {
+  name?: string,
+}
+
 // Node interface
 export interface Node {
   type: Types,
   raw?: string | number,
+  params: Parameter,
   children: Node[],
   parent?: Node,
 }
