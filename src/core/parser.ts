@@ -1,5 +1,6 @@
 // Node type enum
 export enum Types {
+  Program = 'Program',
   Keyword = 'Keyword',
   Node = 'Node',
   Number = 'Number',
