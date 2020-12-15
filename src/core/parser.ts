@@ -35,7 +35,9 @@ export class Parser {
 
   private node(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
+    // Checking if node start or end
     if (['(', '{'].includes(String(value))) {
+      // Pushing new node
       ast.children.push({
         type: Types.Node,
         raw: value,
@@ -44,6 +46,7 @@ export class Parser {
         parent: ast,
       });
     } else if ([')', '}'].includes(String(value))) {
+      // Returning parent node
       return this.parse(index + 1, ast.parent);
     }
     return this.parse(index + 1, ast.children.slice(-1)[0]);
@@ -51,6 +54,7 @@ export class Parser {
 
   private string(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
+    // Pushing string to ast children
     ast.children.push({
       type: Types.String,
       raw: value,
@@ -63,6 +67,7 @@ export class Parser {
 
   private number(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
+    // Pushing number to ast children
     ast.children.push({
       type: Types.Number,
       raw: value,
@@ -75,6 +80,7 @@ export class Parser {
 
   private word(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
+    // Checking if block
     if (!ast.params.name) ast.params.name = String(value);
     else ast.children.push({
       type: Types.Keyword,
@@ -87,8 +93,10 @@ export class Parser {
   }
 
   public parse(index: number = 0, ast: Node = this.ast): Node {
+    // Checking if iterating ends and returning ast
     if (this.tokens.length === index) return ast;
     const { token }: Token = this.tokens[index];
+    // Parsing based on token type
     switch(token) {
       case Tokens.Node:
         return this.node(index, ast);
