@@ -1,18 +1,6 @@
 import { Parser, Node } from './core/parser.ts';
 import { File } from './utils/file.ts';
-
-const getCircularReplacer = () => {
-  const seen = new WeakSet();
-  return (key: string, value: string) => {
-    if (typeof value === 'object' && value !== null) {
-      if (seen.has(value)) {
-        return;
-      }
-      seen.add(value);
-    }
-    return value;
-  };
-};
+import { getCircularReplacer } from './utils/json.ts';
 
 async function main(): Promise<void> {
   // Getting sample code content
