@@ -1,4 +1,4 @@
-import { Lexer, Token } from './lexer.ts';
+import { Lexer, Token, Tokens } from './lexer.ts';
 
 // Node type enum
 export enum Types {
@@ -27,13 +27,47 @@ export class Parser {
     this.tokens = new Lexer(content).lexer();
   }
 
-  private any(tokens: Token[], index: number = 0, ast: Node = this.ast): Node {
-    if (tokens.length === index) return ast;
-    const token: Token = tokens[index];
+  private node(index: number, ast: Node): Node {
+    const token: Token = this.tokens[index];
     console.log(token);
-    return this.any(tokens, index + 1, ast);
+    return this.any(index + 1, ast);
   }
+
+  private string(index: number, ast: Node): Node {
+    const token: Token = this.tokens[index];
+    console.log(token);
+    return this.any(index + 1, ast);
+  }
+
+  private number(index: number, ast: Node): Node {
+    const token: Token = this.tokens[index];
+    console.log(token);
+    return this.any(index + 1, ast);
+  }
+
+  private word(index: number, ast: Node): Node {
+    const token: Token = this.tokens[index];
+    console.log(token);
+    return this.any(index + 1, ast);
+  }
+
+  private any(index: number = 0, ast: Node = this.ast): Node {
+    if (this.tokens.length === index) return ast;
+    const { token, value }: Token = this.tokens[index];
+    switch(token) {
+      case Tokens.Node:
+        return this.word(index, ast);
+      case Tokens.String:
+        return this.string(index, ast);
+      case Tokens.Number:
+        return this.number(index, ast);
+      case Tokens.Word:
+        return this.word(index, ast);
+    }
+    return this.any(index + 1, ast);
+  }
+
   public parse() {
-    this.any(this.tokens);
+    this.any();
   }
 }
