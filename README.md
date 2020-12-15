@@ -8,8 +8,8 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/thomasvergne/quark-lang.svg)](https://github.com/thomasvergne/quark-lang/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/thomasvergne/quark-lang.svg)](https://github.com/thomasvergne/quark-lang/pulls)
+[![GitHub Issues](https://img.shields.io/github/issues/quark-lang/quark.svg)](https://github.com/quark-lang/quark/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/quark-lang/quark.svg)](https://github.com/quark-lang/quark/pulls)
 [![License](https://img.shields.io/badge/license-Creative%20commons-blue.svg)](/LICENSE)
  
 </div>
@@ -87,12 +87,12 @@ No usage informations for the moment.
 To deploy Quark lang, do:
 
 ```bash
- $ git clone git@github.com:thomasvergne/quark-lang.git
+ $ git clone git@github.com:quark-lang/quark.git
 
  # OR
 
  $ git init
- $ git remote add origin git@github.com:thomasvergne/quark-lang.git
+ $ git remote add origin git@github.com:quark-lang/quark.git
  $ git pull
 
 ```
@@ -128,5 +128,5 @@ Many tools are provided with Quark in order to facilitate development.
 -   [@thomasvergne](https://github.com/thomasvergne) - Idea & Initial work
 
 See also the list of
-[contributors](https://github.com/thomasvergne/quark-lang/contributors) who
+[contributors](https://github.com/quark-lang/quark/contributors) who
 participated in this project.
