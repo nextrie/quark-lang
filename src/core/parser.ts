@@ -20,7 +20,6 @@ export enum ExpressionTypes {
   VariableDefinition = 'VariableDefinition',
 }
 
-
 // Node interface
 export interface Node {
   type: Types,
@@ -73,19 +72,6 @@ export class Parser {
     return this.parse(index + 1, ast);
   }
 
-  private number(index: number, ast: Node): Node {
-    const { value }: Token = this.tokens[index];
-    // Pushing number to ast children
-    ast.children.push({
-      type: Types.Number,
-      raw: value,
-      params: {},
-      children: [],
-      parent: ast,
-    });
-    return this.parse(index + 1, ast);
-  }
-
   private word(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
     // Checking if block
@@ -118,8 +104,6 @@ export class Parser {
         return this.node(index, ast);
       case Tokens.String:
         return this.string(index, ast);
-      case Tokens.Number:
-        return this.number(index, ast);
       case Tokens.Word:
         return this.word(index, ast);
     }
