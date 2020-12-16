@@ -9,13 +9,19 @@ export enum Types {
   String = 'String',
 }
 
+export enum ExpressionTypes {
+  FunctionCall = 'FunctionCall',
+  OperandCall = 'OperandCall',
+  PrintCall = 'PrintCall'
+}
+
 export interface Parameter {
   name?: string,
 }
 
 // Node interface
 export interface Node {
-  type: Types,
+  type: Types | ExpressionTypes,
   raw?: string | number,
   params: Parameter,
   children: Node[],
