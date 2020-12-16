@@ -9,21 +9,22 @@ export enum Types {
   String = 'String',
 }
 
-export enum ExpressionTypes {
-  FunctionCall = 'FunctionCall',
-  OperandCall = 'OperandCall',
-  PrintCall = 'PrintCall'
+export interface Block {
+  name?: string,
+  type?: ExpressionTypes,
 }
 
-export interface Parameter {
-  name?: string,
+export enum ExpressionTypes {
+  FunctionCall = 'FunctionCall',
+  OperandCall = 'OperandCall'
 }
+
 
 // Node interface
 export interface Node {
-  type: Types | ExpressionTypes,
+  type: Types,
   raw?: string | number,
-  params: Parameter,
+  params: Block,
   children: Node[],
   parent?: Node,
 }
@@ -87,14 +88,22 @@ export class Parser {
   private word(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
     // Checking if block
-    if (!ast.params.name) ast.params.name = String(value);
-    else ast.children.push({
-      type: Types.Keyword,
-      raw: value,
-      params: {},
-      children: [],
-      parent: ast,
-    });
+    if (!ast.params.name) {
+      if (['+', '-', '*', '/'].includes(String(value))) {
+        ast.params.type = ExpressionTypes.OperandCall;
+      } else {
+        ast.params.type = ExpressionTypes.FunctionCall;
+      }
+      ast.params.name = String(value)
+    } else {
+      ast.children.push({
+        type: Types.Keyword,
+        raw: value,
+        params: {},
+        children: [],
+        parent: ast,
+      });
+    }
     return this.parse(index + 1, ast);
   }
 
