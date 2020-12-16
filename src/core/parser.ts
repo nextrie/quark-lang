@@ -16,7 +16,8 @@ export interface Block {
 
 export enum ExpressionTypes {
   FunctionCall = 'FunctionCall',
-  OperandCall = 'OperandCall'
+  OperandCall = 'OperandCall',
+  VariableDefinition = 'VariableDefinition',
 }
 
 
