@@ -44,7 +44,7 @@ export class Parser {
   private node(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
     // Checking if node start or end
-    if (['(', '{'].includes(String(value))) {
+    if (['(', '{'].includes(value)) {
       // Pushing new node
       ast.children.push({
         type: Types.Node,
@@ -53,7 +53,7 @@ export class Parser {
         children: [],
         parent: ast,
       });
-    } else if ([')', '}'].includes(String(value))) {
+    } else if ([')', '}'].includes(value)) {
       // Returning parent node
       return this.parse(index + 1, ast.parent);
     }
@@ -90,12 +90,12 @@ export class Parser {
     const { value }: Token = this.tokens[index];
     // Checking if block
     if (!ast.params.name) {
-      if (['+', '-', '*', '/'].includes(String(value))) {
+      if (['+', '-', '*', '/'].includes(value)) {
         ast.params.type = ExpressionTypes.OperandCall;
       } else {
         ast.params.type = ExpressionTypes.FunctionCall;
       }
-      ast.params.name = String(value)
+      ast.params.name = value;
     } else {
       ast.children.push({
         type: Types.Keyword,
