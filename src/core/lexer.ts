@@ -3,7 +3,6 @@ export enum Tokens {
   Node = 'Node',
   String = 'String',
   Word = 'Word',
-  Number = 'Number',
 }
 
 // Token Node type
@@ -71,6 +70,6 @@ export class Lexer {
       }
     }
     // Returning tokens list
-    return container;
+    return container.filter((token: Token) => token.value.length > 0);
   }
 }
