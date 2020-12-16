@@ -12,7 +12,7 @@ export type Node = '(' | ')' | '{' | '}';
 // Token interface
 export interface Token {
   token: Tokens,
-  value: Node | number | string,
+  value: Node | string,
 }
 
 export class Lexer {
@@ -71,12 +71,6 @@ export class Lexer {
       }
     }
     // Returning tokens list
-    return container.map((token: Token) => {
-      if ([Tokens.Word, Tokens.String].includes(token.token) && !isNaN(Number(token.value))) {
-        token.token = Tokens.Number;
-        token.value = Number(token.value);
-      }
-      return token;
-    });
+    return container;
   }
 }
