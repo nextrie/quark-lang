@@ -1,3 +1,4 @@
 {
-  (print "Hello world" (+ 5 2))
+  (let username "Thomas")
+  (print "Hello" username)
 }
