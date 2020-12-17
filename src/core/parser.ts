@@ -9,11 +9,13 @@ export enum Types {
   String = 'String',
 }
 
+// Block parameter interface
 export interface Block {
   name?: string,
   type?: ExpressionTypes,
 }
 
+// Expressions enum added.
 export enum ExpressionTypes {
   FunctionCall = 'FunctionCall',
   OperandCall = 'OperandCall',
