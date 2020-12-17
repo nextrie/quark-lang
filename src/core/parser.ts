@@ -30,6 +30,7 @@ export interface Node {
 }
 
 export class Parser {
+  // AST default variable
   private readonly ast: Node = {
     type: Types.Program,
     children: [],
@@ -68,7 +69,7 @@ export class Parser {
       params: {},
       children: [],
       parent: ast,
-    })
+    });
     return this.parse(index + 1, ast);
   }
 
@@ -76,15 +77,22 @@ export class Parser {
     const { value }: Token = this.tokens[index];
     // Checking if block
     if (!ast.params.name) {
-      if (['+', '-', '*', '/'].includes(value)) {
-        ast.params.type = ExpressionTypes.OperandCall;
-      } else {
-        ast.params.type = ExpressionTypes.FunctionCall;
+      // Updating ast parameter type
+      switch (value.toString()) {
+        case '+': case '*': case '-': case '/':
+          ast.params.type = ExpressionTypes.OperandCall;
+          break;
+        case 'let':
+          ast.params.type = ExpressionTypes.VariableDefinition;
+          break;
+        default:
+          ast.params.type = ExpressionTypes.FunctionCall;
       }
       ast.params.name = value;
     } else {
       ast.children.push({
-        type: Types.Keyword,
+        // Checking if value is number or not
+        type: isNaN(Number(value)) ? Types.Keyword : Types.Number,
         raw: value,
         params: {},
         children: [],
