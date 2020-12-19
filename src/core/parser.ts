@@ -25,7 +25,7 @@ export enum ExpressionTypes {
 // Node interface
 export interface Node {
   type: Types,
-  raw?: string | number,
+  raw?: string,
   params: Block,
   children: Node[],
   parent?: Node,
