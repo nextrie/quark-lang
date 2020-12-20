@@ -1,7 +1,7 @@
 import {ExpressionTypes, Node, Parser, Types} from './parser.ts';
 import {Optimizer} from './optimizer.ts';
 
-export class Interpreter {
+export class Compiler {
   private static output: string[] = [];
   private static FunctionCall(ast:  Node): Node {
     this.output.push(`${ast.params.name}(`);
