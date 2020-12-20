@@ -2,7 +2,6 @@ import { Lexer, Token, Tokens } from './lexer.ts';
 
 // Node type enum
 export enum Types {
-  Program = 'Program',
   Keyword = 'Keyword',
   Node = 'Node',
   Number = 'Number',
@@ -34,7 +33,7 @@ export interface Node {
 export class Parser {
   // AST default variable
   private readonly ast: Node = {
-    type: Types.Program,
+    type: Types.Node,
     children: [],
     params: {},
   };
