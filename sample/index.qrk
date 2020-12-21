@@ -1,4 +1,4 @@
 {
-    (let username = "Thomas")
+    (let username "Thomas")
     (print "Hello" username)
 }
