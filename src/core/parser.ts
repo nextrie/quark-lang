@@ -1,113 +1,126 @@
 import { Lexer, Token, Tokens } from './lexer.ts';
 
+// Node type enum
+export enum Types {
+  Keyword = 'Keyword',
+  Node = 'Node',
+  Number = 'Number',
+  String = 'String',
+}
+
+// Block parameter interface
+export interface Block {
+  name?: string,
+  type?: ExpressionTypes,
+}
+
+// Expressions enum added.
+export enum ExpressionTypes {
+  FunctionCall = 'FunctionCall',
+  OperandCall = 'OperandCall',
+  VariableDefinition = 'VariableDefinition',
+}
+
 // Node interface
-interface AST {
-  type: string,
-  children?: Node[],
+export interface Node {
+  type: Types,
+  raw?: string,
+  params: Block,
+  children: Node[],
   parent?: Node,
 }
 
-interface VariableDeclaration extends AST {
-  type: 'VariableDeclaration',
-  identifier: string,
-  value: string,
-  parent: Node,
-}
-
-interface Body extends AST {
-  type: 'Body',
-  body: Node[],
-  parent?: Node,
-}
-
-interface String extends AST {
-  type: 'String',
-  parent?: Node,
-  value: string,
-}
-
-interface Identifier extends AST {
-  type: 'Identifier',
-  parent?: Node,
-  value: string,
-}
-
-export type Node = VariableDeclaration | Body | String | Identifier;
-
-class PreParser {
+export class PreParser {
   // AST default variable
-  private static ast: Node;
-  private static tokens: Token[];
+  private ast: Node | undefined;
+  private readonly tokens: Token[];
+  constructor(content: string) {
+    this.tokens = new Lexer(content).lexer();
+  }
 
-  private static node(index: number, ast: Body): Node {
+  private node(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
     // Checking if node start or end
-    if (!this.ast) {
-      this.ast = {
-        type: 'Body',
-        body: [],
-      }
-      return this.any(index + 1, ast);
-    }
     if (['(', '{'].includes(value)) {
       // Pushing new node
-      ast.body.push({
-        type: 'Body',
-        body: [],
+      if (!this.ast) {
+        this.ast = {
+          type: Types.Node,
+          children: [],
+          params: {},
+        };
+        return this.parse(index + 1, ast);
+      }
+      ast.children.push({
+        type: Types.Node,
+        raw: value,
+        params: {},
+        children: [],
         parent: ast,
       });
     } else if ([')', '}'].includes(value)) {
       // Returning parent node
-      return this.any(index + 1, ast.parent);
+      return this.parse(index + 1, ast.parent);
     }
-    return this.any(index + 1, ast.body.slice(-1)[0]);
+    return this.parse(index + 1, ast.children.slice(-1)[0]);
   }
 
-  private static string(index: number, ast: Body): Node {
+  private string(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
     // Pushing string to ast children
-    ast.body.push({
-      type: 'String',
-      value,
+    ast.children.push({
+      type: Types.String,
+      raw: value,
+      params: {},
+      children: [],
       parent: ast,
     });
-    return this.any(index + 1, ast);
+    return this.parse(index + 1, ast);
   }
 
-  private static word(index: number, ast: Node): Node {
+  private word(index: number, ast: Node): Node {
     const { value }: Token = this.tokens[index];
     // Checking if block
-    if (value === 'let') {
-      ast.type = 'VariableDeclaration';
+    if (!ast.params.name) {
+      // Updating ast parameter type
+      switch (value.toString()) {
+        case '+': case '*': case '-': case '/':
+          ast.params.type = ExpressionTypes.OperandCall;
+          break;
+        case 'let':
+          ast.params.type = ExpressionTypes.VariableDefinition;
+          break;
+        default:
+          ast.params.type = ExpressionTypes.FunctionCall;
+      }
+      ast.params.name = value;
     } else {
-      (<Body>ast).body.push({
-        type: 'Identifier',
-        value: value,
+      ast.children.push({
+        // Checking if value is number or not
+        type: isNaN(Number(value)) ? Types.Keyword : Types.Number,
+        raw: value,
+        params: {},
+        children: [],
         parent: ast,
       });
     }
-    return this.any(index + 1, ast);
+    return this.parse(index + 1, ast);
   }
 
-  private static any(index: number = 0, ast: Node = this.ast as Node): Node {
+  public parse(index: number = 0, ast: Node = this.ast as Node): Node {
     // Checking if iterating ends and returning ast
     if (this.tokens.length === index) return ast;
     const { token }: Token = this.tokens[index];
     // Parsing based on token type
     switch(token) {
       case Tokens.Node:
-        return this.node(index, ast as Body);
+        return this.node(index, ast);
       case Tokens.String:
-        return this.string(index, ast as Body);
+        return this.string(index, ast);
       case Tokens.Word:
         return this.word(index, ast);
     }
-    return this.any(index + 1, ast);
-  }
-
-  public static parse(source: string): Node {
-    this.tokens = new Lexer(source).lexer();
-    return this.any(0, this.ast as Node);
+    return this.parse(index + 1, ast);
   }
 }
 
@@ -115,7 +128,13 @@ export class Parser {
   private static ast: Node;
 
   public static parse(source: string) {
-    this.ast = PreParser.parse(source);
-    console.log(this.ast);
+    this.ast = new PreParser(source).parse();
+    const Parse = (ast: Node): any | string => {
+      if (!ast) return this.ast;
+
+
+      return this.ast;
+    }
+    return Parse(this.ast);
   }
 }
