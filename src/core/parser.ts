@@ -1,30 +1,29 @@
 import { Lexer, Token, Tokens } from './lexer.ts';
 
-// Node type enum
-export enum Types {
-  Keyword = 'Keyword',
-  Node = 'Node',
-  Number = 'Number',
-  String = 'String',
-}
-
-// Expressions enum added.
-export enum ExpressionTypes {
-  FunctionCall = 'FunctionCall',
-  OperandCall = 'OperandCall',
-  VariableDefinition = 'VariableDefinition',
-}
-
 // Node interface
-export interface Node {
-  type: Types,
-  raw?: string,
-  children: Node[],
+export interface AST {
+  type: string,
+  children?: Node[],
   parent?: Node,
 }
 
+interface VariableDeclaration extends AST {
+  type: 'VariableDeclaration',
+  identifier: string,
+  value: string,
+  parent: Node,
+}
+
+interface Body extends AST {
+  type: 'Body',
+  body: Node[],
+  parent?: Node,
+}
+
+export type Node = VariableDeclaration | Body;
+
 export class Parser {
-  private static ast: Node = { type: Types.Node, children: [] };
+  private static ast: Node = { type: 'Body', body: [] };
   private static tokens: Token[];
 
   public static parse(source: string | Token[]): Node {
