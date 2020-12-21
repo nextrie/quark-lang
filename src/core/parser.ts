@@ -8,12 +8,6 @@ export enum Types {
   String = 'String',
 }
 
-// Block parameter interface
-export interface Block {
-  name?: string,
-  type?: ExpressionTypes,
-}
-
 // Expressions enum added.
 export enum ExpressionTypes {
   FunctionCall = 'FunctionCall',
@@ -25,8 +19,18 @@ export enum ExpressionTypes {
 export interface Node {
   type: Types,
   raw?: string,
-  params: Block,
   children: Node[],
   parent?: Node,
 }
 
+export class Parser {
+  private static ast: Node = { type: Types.Node, children: [] };
+  private static tokens: Token[];
+
+  public static parse(source: string | Token[]): Node {
+    this.tokens = typeof source === 'string'
+      ? new Lexer(source).lexer()
+      : source;
+    return this.ast;
+  }
+}
