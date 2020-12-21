@@ -1,15 +1,7 @@
 import { Lexer, Token, Tokens } from './lexer.ts';
 
-// Node type enum
-export enum Types {
-  Keyword = 'Keyword',
-  Node = 'Node',
-  Number = 'Number',
-  String = 'String',
-}
-
 // Node interface
-export interface AST {
+interface AST {
   type: string,
   children?: Node[],
   parent?: Node,
@@ -42,17 +34,21 @@ interface Identifier extends AST {
 
 export type Node = VariableDeclaration | Body | String | Identifier;
 
-export class PreParser {
+class PreParser {
   // AST default variable
-  private static ast: Node = {
-    type: 'Body',
-    body: [],
-  };
+  private static ast: Node;
   private static tokens: Token[];
 
   private static node(index: number, ast: Body): Node {
     const { value }: Token = this.tokens[index];
     // Checking if node start or end
+    if (!this.ast) {
+      this.ast = {
+        type: 'Body',
+        body: [],
+      }
+      return this.any(index + 1, ast);
+    }
     if (['(', '{'].includes(value)) {
       // Pushing new node
       ast.body.push({
@@ -112,5 +108,14 @@ export class PreParser {
   public static parse(source: string): Node {
     this.tokens = new Lexer(source).lexer();
     return this.any(0, this.ast as Node);
+  }
+}
+
+export class Parser {
+  private static ast: Node;
+
+  public static parse(source: string) {
+    this.ast = PreParser.parse(source);
+    console.log(this.ast);
   }
 }
