@@ -1,140 +1,36 @@
 import { Lexer, Token, Tokens } from './lexer.ts';
 
-// Node type enum
-export enum Types {
-  Keyword = 'Keyword',
-  Node = 'Node',
-  Number = 'Number',
-  String = 'String',
-}
-
-// Block parameter interface
-export interface Block {
-  name?: string,
-  type?: ExpressionTypes,
-}
-
-// Expressions enum added.
-export enum ExpressionTypes {
-  FunctionCall = 'FunctionCall',
-  OperandCall = 'OperandCall',
-  VariableDefinition = 'VariableDefinition',
-}
-
-// Node interface
-export interface Node {
-  type: Types,
-  raw?: string,
-  params: Block,
-  children: Node[],
-  parent?: Node,
-}
-
-export class PreParser {
-  // AST default variable
-  private ast: Node | undefined;
-  private readonly tokens: Token[];
-  constructor(content: string) {
-    this.tokens = new Lexer(content).lexer();
-  }
-
-  private node(index: number, ast: Node): Node {
-    const { value }: Token = this.tokens[index];
-    // Checking if node start or end
-    if (['(', '{'].includes(value)) {
-      // Pushing new node
-      if (!this.ast) {
-        this.ast = {
-          type: Types.Node,
-          children: [],
-          params: {},
-        };
-        return this.parse(index + 1, ast);
-      }
-      ast.children.push({
-        type: Types.Node,
-        raw: value,
-        params: {},
-        children: [],
-        parent: ast,
-      });
-    } else if ([')', '}'].includes(value)) {
-      // Returning parent node
-      return this.parse(index + 1, ast.parent);
-    }
-    return this.parse(index + 1, ast.children.slice(-1)[0]);
-  }
-
-  private string(index: number, ast: Node): Node {
-    const { value }: Token = this.tokens[index];
-    // Pushing string to ast children
-    ast.children.push({
-      type: Types.String,
-      raw: value,
-      params: {},
-      children: [],
-      parent: ast,
-    });
-    return this.parse(index + 1, ast);
-  }
-
-  private word(index: number, ast: Node): Node {
-    const { value }: Token = this.tokens[index];
-    // Checking if block
-    if (!ast.params.name) {
-      // Updating ast parameter type
-      switch (value.toString()) {
-        case '+': case '*': case '-': case '/':
-          ast.params.type = ExpressionTypes.OperandCall;
-          break;
-        case 'let':
-          ast.params.type = ExpressionTypes.VariableDefinition;
-          break;
-        default:
-          ast.params.type = ExpressionTypes.FunctionCall;
-      }
-      ast.params.name = value;
-    } else {
-      ast.children.push({
-        // Checking if value is number or not
-        type: isNaN(Number(value)) ? Types.Keyword : Types.Number,
-        raw: value,
-        params: {},
-        children: [],
-        parent: ast,
-      });
-    }
-    return this.parse(index + 1, ast);
-  }
-
-  public parse(index: number = 0, ast: Node = this.ast as Node): Node {
-    // Checking if iterating ends and returning ast
-    if (this.tokens.length === index) return ast;
-    const { token }: Token = this.tokens[index];
-    // Parsing based on token type
-    switch(token) {
-      case Tokens.Node:
-        return this.node(index, ast);
-      case Tokens.String:
-        return this.string(index, ast);
-      case Tokens.Word:
-        return this.word(index, ast);
-    }
-    return this.parse(index + 1, ast);
-  }
-}
+type Node = Array<string | Node>
 
 export class Parser {
-  private static ast: Node;
+  private static tokens: Token[];
+  private static ast: Node = [];
+  private static parents: number[] = [];
+
+  private static goTo(it: number = this.parents.length, ast: Node = this.ast): Node {
+    if (it === 0) return ast;
+    this.parents.splice(0, 1);
+    return this.goTo(it - 1, ast[it - 1] as Node);
+  }
 
   public static parse(source: string) {
-    this.ast = new PreParser(source).parse();
-    const Parse = (ast: Node): any | string => {
-      if (!ast) return this.ast;
-
-
-      return this.ast;
+    this.tokens = new Lexer(source).lexer();
+    const Parse = (index: number = 0, ast: Node = this.ast): Node => {
+      const token: Token = this.tokens[index];
+      if (!token) return this.ast;
+      if (token.token === Tokens.Node) {
+        if (['(', '{'].includes(token.value)) {
+          this.parents.push(ast.length + 1);
+          ast.push([] as Node);
+          return Parse(index + 1, ast.slice(-1)[0] as Node)
+        } else {
+          return Parse(index + 1, this.goTo(1));
+        }
+      } else if ([Tokens.String, Tokens.Word].includes(token.token)) {
+        ast.push(token.value);
+      }
+      return Parse(index + 1, ast);
     }
-    return Parse(this.ast);
+    return Parse();
   }
 }
