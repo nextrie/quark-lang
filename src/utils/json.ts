@@ -1,18 +1,13 @@
 export const getCircularReplacer = () => {
-  // Contains visited value
+  // Contains visited value. WeakSet cause it won't be collected by GC.
   const seen = new WeakSet();
   return (key: string, value: string) => {
-    // Checking if value is an object
     if (typeof value === 'object' && value !== null) {
-      // Checking if value has been already visited
       if (seen.has(value)) {
-        // Returning nothing
         return;
       }
-      // Adding value to seen
       seen.add(value);
     }
-    // Returning default value
     return value;
   };
 };

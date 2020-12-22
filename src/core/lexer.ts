@@ -17,59 +17,50 @@ export interface Token {
 export class Lexer {
   private readonly code: string;
   constructor(content: string) {
-    // Formatting content and setting it to code variable
+    // Formatting content
     this.code = content
       .split(/\r?\n/g)
       .map((line: string) => line.trim())
       .join('');
   }
   public lexer(): Token[] {
-    // State variable contains state of temporary value
     let state: string = '';
     // Container variable contains processed tokens
     const container: Token[] = [];
-    // Tmp variable contains temporary code chars
+    // Tmp variable contains temporary code chars that has been collected by tokenizer and which will be pushed to container
     const tmp: string[] = [];
 
     for (const char of this.code) {
-      // Checking if char is node
       if (['(', ')', '{', '}'].includes(char)) {
-        // Checking if tmp isn't empty and adding it to tokens
+        // Rechecking if tmp variable isn't empty before processing Node char
         if (tmp.length > 0) {
           state = '';
           container.push({ token: Tokens.Word, value: tmp.join('').trim() });
           tmp.splice(0, tmp.length);
         }
-        // Pushing node token to tokens
         container.push({ token: Tokens.Node, value: char as Node, });
       } else if (char === '"') {
-        // Pushing quote char to tmp
         tmp.push(char);
-        // Checking if it's string end and pushing it to tokens
-        if (state === 'STRING') {
+        if (state === Tokens.String) {
           state = '';
           container.push({ token: Tokens.String, value: tmp.join('').trim() });
           tmp.splice(0, tmp.length);
         } else {
-          // Setting state to string
-          state = 'STRING';
+          state = Tokens.String;
         }
       } else if (char === ' ' && tmp.length > 0) {
-        // Checking if it's space in string
-        if (state === 'STRING') {
+        if (state === Tokens.String) {
           tmp.push(char);
         } else {
-          // Resetting state and pushing word to tokens
           state = '';
           container.push({ token: Tokens.Word, value: tmp.join('').trim() });
           tmp.splice(0, tmp.length);
         }
       } else {
-        // Pushing any char to temporary variable
         tmp.push(char);
       }
     }
-    // Returning tokens list
+    // Removing empty tokens from container
     return container.filter((token: Token) => token.value.length > 0);
   }
 }
