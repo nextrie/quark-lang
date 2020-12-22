@@ -27,7 +27,6 @@
 -   [Getting Started](#getting_started)
 -   [Manual installation](#manual)
 -   [Build](#build)
--   [Development](#dev)
 -   [Usage](#usage)
 -   [TODO](./TODO.md)
 -   [Contributing](./CONTRIBUTING.md)
@@ -102,6 +101,7 @@ To deploy Quark lang, do:
 To build the project, do:
 
 ```bash
+ $ mkdir build
  $ deno compile --unstable src/main.ts -o build/quark-lang
  $ ./build/quark-lang
 
@@ -109,20 +109,7 @@ To build the project, do:
 
  $ docker build -t quark-lang .
  $ docker run -it --rm quark-lang
-
 ```
-
-## 🖥️ Development <a name="dev"></a>
-Many tools are provided with Quark in order to facilitate development.
-
-```bash
- # Compile the script runner.
- $ deno compile --unstable src/utils/script.ts -o build/script
-
- # Execute the script runner.
- $ ./build/script <script>
-```
-
 ## ✍️ Authors <a name = "authors"></a>
 
 -   [@thomasvergne](https://github.com/thomasvergne) - Idea & Initial work
